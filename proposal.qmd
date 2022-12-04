@@ -8,7 +8,28 @@ execute:
 editor: visual
 ---
 
+
+
 ## Executive Summary
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+library(knitr)
+library(patchwork)
+ggplot2::theme_set(ggplot2::theme_bw())
+life <- read_csv("data/life_exp.csv")
+```
+
+```{r}
+life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Developed"))) %>%
+  rename(life_exp = "Life expectancy", adult_mortality = "Adult Mortality", 
+        infant_mortality = "infant deaths", pct_expend = "percentage expenditure", 
+        hep_b = "Hepatitis B", under_five_deaths = "under-five deaths", 
+        tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
+        thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
+        income_comp = "Income composition of resources")
+```
+
 
 1. Project objectives
 2. High-level summary of project plans
@@ -17,9 +38,43 @@ editor: visual
 
 ## Data Description
 
-1. Data source
-2. Data overview (variables, which are predictors/response)
-3. Data wrangling (taking difference of first and last entry of each nation's life expectency; no cleaning necessary)
+- Data from the Global Healthy Observatory's (GHO) data repository, made public for global health data analysis
+- Health factors collected from GHO repository, economic data collected from United Nations' website
+- Each observation represents nation in a given year and includes health and economic data, as well as each nation's life expectancy for that year
+- 22 variables:
+  - 21 predictors (see next slides)
+  - 1 response: life expectancy, in years
+
+## Data Dictionary
+- `Country`: Country name 
+- `Year`: Year country's GHO data
+- `Status`: Developmental status of country (Developed or Developing)
+- `life_exp`: Average expectancy in country (years)
+- `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
+- `infant_mortality`: Number of infants deaths per 1000 infants
+
+## Data Dictionary
+- `Alcohol`: Alcohol consumption per capita (liters of pure alcohol)
+- `pct_expend`: Expenditure on health as a percentage of GDP per capita
+- `hep_b`: Hepatitis B immunization rate among 1-year-olds (%)
+- `Measles`: Number of Measles cases reported per 1000 people
+- `BMI`: Average BMI (Body Mass Index) of entire country's population 
+
+
+## Data Dictionary
+- `under_five_deaths`: Number of deaths of 5-year-olds or younger per 1000 people
+- `Polio`: Polio immunization rate among 1-year-olds (%)
+- `tot_expend`: Government expenditure on healthcare as a percentage of total government expenditure
+- `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
+- `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
+
+## Data Dictionary
+- `GDP`: GDP per capita
+- `Population`: Total population of country
+- `thinnes_adole`: Prevalence of "thinness" among adolescents aged 10-19 (%)
+- `thinness_infant`: Prevalence of "thinness" among infants aged 5-9 (%) 
+- `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
+- `Schooling`: Average number of years of schooling
 
 ## Roadmap
 

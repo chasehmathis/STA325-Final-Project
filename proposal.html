@@ -325,6 +325,12 @@
 
 <section id="executive-summary" class="slide level2">
 <h2>Executive Summary</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
 <ol type="1">
 <li>Project objectives</li>
 <li>High-level summary of project plans</li>
@@ -334,11 +340,58 @@
 </section>
 <section id="data-description" class="slide level2">
 <h2>Data Description</h2>
-<ol type="1">
-<li>Data source</li>
-<li>Data overview (variables, which are predictors/response)</li>
-<li>Data wrangling (taking difference of first and last entry of each nation’s life expectency; no cleaning necessary)</li>
-</ol>
+<ul>
+<li>Data from the Global Healthy Observatory’s (GHO) data repository, made public for global health data analysis</li>
+<li>Health factors collected from GHO repository, economic data collected from United Nations’ website</li>
+<li>Each observation represents nation in a given year and includes health and economic data, as well as each nation’s life expectancy for that year</li>
+<li>22 variables:
+<ul>
+<li>21 predictors (see next slides)</li>
+<li>1 response: life expectancy, in years</li>
+</ul></li>
+</ul>
+</section>
+<section id="data-dictionary" class="slide level2">
+<h2>Data Dictionary</h2>
+<ul>
+<li><code>Country</code>: Country name</li>
+<li><code>Year</code>: Year country’s GHO data</li>
+<li><code>Status</code>: Developmental status of country (Developed or Developing)</li>
+<li><code>life_exp</code>: Average expectancy in country (years)</li>
+<li><code>adult_mortality</code>: Number of deaths of people aged 15-60 per 1000 people</li>
+<li><code>infant_mortality</code>: Number of infants deaths per 1000 infants</li>
+</ul>
+</section>
+<section id="data-dictionary-1" class="slide level2">
+<h2>Data Dictionary</h2>
+<ul>
+<li><code>Alcohol</code>: Alcohol consumption per capita (liters of pure alcohol)</li>
+<li><code>pct_expend</code>: Expenditure on health as a percentage of GDP per capita</li>
+<li><code>hep_b</code>: Hepatitis B immunization rate among 1-year-olds (%)</li>
+<li><code>Measles</code>: Number of Measles cases reported per 1000 people</li>
+<li><code>BMI</code>: Average BMI (Body Mass Index) of entire country’s population</li>
+</ul>
+</section>
+<section id="data-dictionary-2" class="slide level2">
+<h2>Data Dictionary</h2>
+<ul>
+<li><code>under_five_deaths</code>: Number of deaths of 5-year-olds or younger per 1000 people</li>
+<li><code>Polio</code>: Polio immunization rate among 1-year-olds (%)</li>
+<li><code>tot_expend</code>: Government expenditure on healthcare as a percentage of total government expenditure</li>
+<li><code>Diphtheria</code>: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)</li>
+<li><code>hiv_aids</code>: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births</li>
+</ul>
+</section>
+<section id="data-dictionary-3" class="slide level2">
+<h2>Data Dictionary</h2>
+<ul>
+<li><code>GDP</code>: GDP per capita</li>
+<li><code>Population</code>: Total population of country</li>
+<li><code>thinnes_adole</code>: Prevalence of “thinness” among adolescents aged 10-19 (%)</li>
+<li><code>thinness_infant</code>: Prevalence of “thinness” among infants aged 5-9 (%)</li>
+<li><code>income_comp</code>: Human Development Index in terms of income composition of resources (0 to 1)</li>
+<li><code>Schooling</code>: Average number of years of schooling</li>
+</ul>
 </section>
 <section id="roadmap" class="slide level2">
 <h2>Roadmap</h2>
@@ -567,6 +620,48 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          // dispatch for htmlwidgets
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for reveal
+        if (window.Reveal) {
+          window.Reveal.addEventListener("slidechanged", function(event) {
+            fireSlideChanged(event.previousSlide, event.currentSlide);
+          });
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
