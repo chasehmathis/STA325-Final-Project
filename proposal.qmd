@@ -1,0 +1,35 @@
+---
+title: "STA325 Final Project Proposal"
+author: "Dillan Sant, Chase Mathis"
+format: revealjs
+execute: 
+  warning: false
+  echo: false
+editor: visual
+---
+
+## Executive Summary
+
+1. Project objectives
+2. High-level summary of project plans
+3. Importance of project, who can it benefit
+4. Other relevant info
+
+## Data Description
+
+1. Data source
+2. Data overview (variables, which are predictors/response)
+3. Data wrangling (taking difference of first and last entry of each nation's life expectency; no cleaning necessary)
+
+## Roadmap
+
+1. Inference + prediction goals
+2. Possible modeling strategies
+3. How we will select optimal model, best achieves our prediction/inference goals
+
+Flowchart to outline key steps?
+
+## Exploratory Data Analysis
+
+plots, descriptive statistics, initial findings, etc.
+
