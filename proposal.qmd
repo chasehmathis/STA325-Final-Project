@@ -141,17 +141,17 @@ p2 <- ggplot(life, aes(x = life_exp)) +
 
 corrr::correlate(life) |> 
   select(term, life_exp) |> 
+  filter(term!= life_exp) |> 
   mutate(life_exp = abs(life_exp)) |> 
   arrange(desc(life_exp)) |> 
   head(2) |> 
   pull(term)
 # what is relationship between the two must importnat factors
-ggplot(life, aes(x = Schooling, y = life_exp)) + 
+p3 <- ggplot(life, aes(x = Schooling, y = life_exp)) + 
   geom_point()
 ```
 
 ```{r}
 #| warning: false
-p1
-p2
+p1+p2/p3
 ```
