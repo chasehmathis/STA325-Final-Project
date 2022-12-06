@@ -40,12 +40,11 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 -   Health factors collected from GHO repository, economic data collected from United Nations' website
 -   Each observation represents nation in a given year and includes health and economic data, as well as each nation's life expectancy for that year
 -   22 variables:
-    -   21 predictors (see next slides)
+    -   20 predictors (see next slides)
     -   1 response: life expectancy, in years
 
 ## Data Dictionary
 
--   `Country`: Country name
 -   `Year`: Year country's GHO data
 -   `Status`: Developmental status of country (Developed or Developing)
 -   `life_exp`: Average expectancy in country (years)
