@@ -29,10 +29,8 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
         income_comp = "Income composition of resources") 
 ```
 
-1.  Project objectives
-2.  High-level summary of project plans
-3.  Importance of project, who can it benefit
-4.  Other relevant info
+- Our objective is to discover which health or economic factors of a nation impacts the country's average life expectancy the most
+- We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health
 
 ## Data Description
 
@@ -86,7 +84,7 @@ Flowchart to outline key steps?
 
 ## Inference and Prediction Goals
 
--   There are some important research questions that the datset can help us answer. For instance:
+-   There are some important research questions that the dataset can help us answer. For instance:
 
     -   What impacts `Life Expectancy` the most?
 
@@ -105,6 +103,11 @@ Flowchart to outline key steps?
     1.  Given that the relationship between Linear and Nonlinear Regression is not linear, can we use `Tree-based models` to predict?
 
 ## How Will we Select the Best Model?
+
+- We aim to select a model with good performance without sacrificing much inference
+- Our primary goals are to find what health or economic factors of a country impact their average life expectancy and allow for interpretable results that can be helpful to the field of global health
+- We will choose a model with relatively small test error and one whose results/predictions are interpretable
+- Thus, we will not necessarily choose the model with the lowest test MSE
 
 ## Exploratory Data Analysis
 
