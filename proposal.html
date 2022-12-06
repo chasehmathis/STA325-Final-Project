@@ -5,9 +5,9 @@
 <script src="proposal_files/libs/quarto-html/popper.min.js"></script>
 <script src="proposal_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="proposal_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="proposal_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet">
+<link href="proposal_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="proposal_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.563">
+  <meta name="generator" content="quarto-1.0.36">
 
   <meta name="author" content="Dillan Sant, Chase Mathis">
   <title>STA325 Final Project Proposal</title>
@@ -318,7 +318,7 @@
   <link href="proposal_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
   <script src="proposal_files/libs/grViz-binding-1.0.9/grViz.js"></script>
 </head>
-<body>
+<body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
@@ -395,15 +395,6 @@
 <li><code>Schooling</code>: Average number of years of schooling</li>
 </ul>
 </section>
-<section id="roadmap" class="slide level2">
-<h2>Roadmap</h2>
-<ol type="1">
-<li>Inference + prediction goals</li>
-<li>Possible modeling strategies</li>
-<li>How we will select optimal model, best achieves our prediction/inference goals</li>
-</ol>
-<p>Flowchart to outline key steps?</p>
-</section>
 <section id="inference-and-prediction-goals" class="slide level2">
 <h2>Inference and Prediction Goals</h2>
 <ul>
@@ -439,12 +430,17 @@
 <li>Thus, we will not necessarily choose the model with the lowest test MSE</li>
 </ul>
 </section>
-<section id="roadmap-1" class="slide level2">
+<section id="roadmap" class="slide level2">
 <h2>Roadmap</h2>
 <div class="cell">
 <div class="cell-output-display">
+<<<<<<< HEAD
 <div id="htmlwidget-9a9d14f38cfc7855de55" style="width:960px;height:480px;" class="grViz html-widget"></div>
 <script type="application/json" data-for="htmlwidget-9a9d14f38cfc7855de55">{"x":{"diagram":"digraph flowchart {\n  node [fontname = arial, shape = oval, color = Lavender, style = filled]\n  tab1 [label = \"Gather and clean data\"]\n  tab2 [label = \"Explore relationships between health and economic factors\"]\n  tab3 [label = \"Model\"]\n  tab4 [label = \"Choose model with high predictive power\"]\n  tab5 [label = \"Determine which factors most affect life expectancy\"]\n  tab6 [label = \"Use results to predict future life expectancy\"]\n  \n  tab1 -> tab2\n  tab2 -> tab3\n  tab3 -> tab4\n  tab3 -> tab5\n  tab4 -> tab6\n  tab5 -> tab6\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+=======
+<div id="htmlwidget-a7e283eb2c2cf74f5ebe" style="width:960px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a7e283eb2c2cf74f5ebe">{"x":{"diagram":"digraph flowchart {\n  node [fontname = arial, shape = oval, color = Lavender, style = filled]\n  tab1 [label = \"Gather and clean data\"]\n  tab2 [label = \"Explore relationships between health and economic factors\"]\n  tab3 [label = \"Model\"]\n  tab4 [label = \"Choose model with high predictive power\"]\n  tab5 [label = \"Determine which factors most affect life expectancy\"]\n  tab6 [label = \"Use results to predict future life expectancy\"]\n  \n  tab1 -> tab2\n  tab2 -> tab3\n  tab3 -> tab4\n  tab3 -> tab5\n  tab4 -> tab6\n  tab5 -> tab6\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+>>>>>>> f505cf01d04dbfa49cbdc5144bec30f7425b10b5
 </div>
 </div>
 </section>
@@ -455,6 +451,7 @@
 <pre><code>[1] "Schooling"   "income_comp"</code></pre>
 </div>
 </div>
+<<<<<<< HEAD
 <div class="cell">
 <div class="cell-output-display">
 <p><img data-src="proposal_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
@@ -466,6 +463,10 @@
 </div>
 </div>
 <div class="footer footer-default">
+=======
+
+<img data-src="proposal_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"><div class="footer footer-default">
+>>>>>>> f505cf01d04dbfa49cbdc5144bec30f7425b10b5
 
 </div>
 </section>
@@ -724,6 +725,24 @@
 
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);

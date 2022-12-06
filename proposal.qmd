@@ -79,14 +79,6 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 -   `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
 -   `Schooling`: Average number of years of schooling
 
-## Roadmap
-
-1.  Inference + prediction goals
-2.  Possible modeling strategies
-3.  How we will select optimal model, best achieves our prediction/inference goals
-
-Flowchart to outline key steps?
-
 ## Inference and Prediction Goals
 
 -   There are some important research questions that the dataset can help us answer. For instance:
