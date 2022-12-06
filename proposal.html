@@ -5,9 +5,9 @@
 <script src="proposal_files/libs/quarto-html/popper.min.js"></script>
 <script src="proposal_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="proposal_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="proposal_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="proposal_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet">
 <link href="proposal_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.36">
+  <meta name="generator" content="quarto-0.9.563">
 
   <meta name="author" content="Dillan Sant, Chase Mathis">
   <title>STA325 Final Project Proposal</title>
@@ -318,7 +318,7 @@
   <link href="proposal_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
   <script src="proposal_files/libs/grViz-binding-1.0.9/grViz.js"></script>
 </head>
-<body class="quarto-light">
+<body>
   <div class="reveal">
     <div class="slides">
 
@@ -336,8 +336,9 @@
 
 </div>
 <ul>
-<li>Our objective is to discover which health or economic factors of a nation impacts the country’s average life expectancy the most</li>
-<li>We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health</li>
+<li><p>Our objective is to discover which health or economic factors of a nation impacts the country’s average life expectancy the most</p></li>
+<li><p>We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health</p></li>
+<li><p>Government officials can use these findings to make data-driven decisions about the health of their people</p></li>
 </ul>
 </section>
 <section id="data-description" class="slide level2">
@@ -437,18 +438,15 @@
 <li>We will choose a model with relatively small test error and one whose results/predictions are interpretable</li>
 <li>Thus, we will not necessarily choose the model with the lowest test MSE</li>
 </ul>
-<<<<<<< HEAD
-=======
 </section>
 <section id="roadmap-1" class="slide level2">
 <h2>Roadmap</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-7695bdc7a68a7b58a468" style="width:960px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-7695bdc7a68a7b58a468">{"x":{"diagram":"digraph flowchart {\n  node [fontname = arial, shape = oval, color = Lavender, style = filled]\n  tab1 [label = \"Gather and clean data\"]\n  tab2 [label = \"Explore relationships between health and economic factors\"]\n  tab3 [label = \"Model\"]\n  tab4 [label = \"Choose model with high predictive power\"]\n  tab5 [label = \"Determine which factors most affect life expectancy\"]\n  tab6 [label = \"Use results to predict future life expectancy\"]\n  \n  tab1 -> tab2\n  tab2 -> tab3\n  tab3 -> tab4\n  tab3 -> tab5\n  tab4 -> tab6\n  tab5 -> tab6\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9292f7f78ff66eea9754" style="width:960px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9292f7f78ff66eea9754">{"x":{"diagram":"digraph flowchart {\n  node [fontname = arial, shape = oval, color = Lavender, style = filled]\n  tab1 [label = \"Gather and clean data\"]\n  tab2 [label = \"Explore relationships between health and economic factors\"]\n  tab3 [label = \"Model\"]\n  tab4 [label = \"Choose model with high predictive power\"]\n  tab5 [label = \"Determine which factors most affect life expectancy\"]\n  tab6 [label = \"Use results to predict future life expectancy\"]\n  \n  tab1 -> tab2\n  tab2 -> tab3\n  tab3 -> tab4\n  tab3 -> tab5\n  tab4 -> tab6\n  tab5 -> tab6\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
->>>>>>> 56b95d05fe199d15ef989babf7cbbda153269d91
 </section>
 <section id="exploratory-data-analysis" class="slide level2">
 <h2>Exploratory Data Analysis</h2>
@@ -458,15 +456,7 @@
 </div>
 </div>
 
-<<<<<<< HEAD
-<img data-src="proposal_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><div class="footer footer-default">
-=======
-<img data-src="proposal_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
-<section id="predictors" class="slide level2">
-<h2>predictors</h2>
-
-<img data-src="proposal_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="footer footer-default">
->>>>>>> 56b95d05fe199d15ef989babf7cbbda153269d91
+<img data-src="proposal_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"><div class="footer footer-default">
 
 </div>
 </section>
@@ -725,24 +715,6 @@
 
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
-      const toggleBodyColorMode = (bsSheetEl) => {
-        const mode = bsSheetEl.getAttribute("data-mode");
-        const bodyEl = window.document.querySelector("body");
-        if (mode === "dark") {
-          bodyEl.classList.add("quarto-dark");
-          bodyEl.classList.remove("quarto-light");
-        } else {
-          bodyEl.classList.add("quarto-light");
-          bodyEl.classList.remove("quarto-dark");
-        }
-      }
-      const toggleBodyColorPrimary = () => {
-        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-        if (bsSheetEl) {
-          toggleBodyColorMode(bsSheetEl);
-        }
-      }
-      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);

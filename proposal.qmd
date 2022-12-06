@@ -32,7 +32,10 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 ```
 
 -   Our objective is to discover which health or economic factors of a nation impacts the country's average life expectancy the most
+
 -   We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health
+
+-   Government officials can use these findings to make data-driven decisions about the health of their people
 
 ## Data Description
 
@@ -139,7 +142,6 @@ DiagrammeR::grViz(diagram = "digraph flowchart {
   [6]: 'Use results to predict future life expectancy'
   ")
 ```
-
 
 ## Exploratory Data Analysis
 
