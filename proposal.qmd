@@ -16,6 +16,7 @@ library(tidymodels)
 library(knitr)
 library(patchwork)
 library(Hmisc) # for histograms
+library(DiagrammeR)
 ggplot2::theme_set(ggplot2::theme_bw())
 life <- read_csv("data/life_exp.csv")
 ```
@@ -109,6 +110,36 @@ Flowchart to outline key steps?
 -   Our primary goals are to find what health or economic factors of a country impact their average life expectancy and allow for interpretable results that can be helpful to the field of global health
 -   We will choose a model with relatively small test error and one whose results/predictions are interpretable
 -   Thus, we will not necessarily choose the model with the lowest test MSE
+
+## Roadmap
+
+```{r}
+DiagrammeR::grViz(diagram = "digraph flowchart {
+  node [fontname = arial, shape = oval, color = Lavender, style = filled]
+  tab1 [label = '@@1']
+  tab2 [label = '@@2']
+  tab3 [label = '@@3']
+  tab4 [label = '@@4']
+  tab5 [label = '@@5']
+  tab6 [label = '@@6']
+  
+  tab1 -> tab2
+  tab2 -> tab3
+  tab3 -> tab4
+  tab3 -> tab5
+  tab4 -> tab6
+  tab5 -> tab6
+}
+  
+  [1]: 'Gather and clean data'
+  [2]: 'Explore relationships between health and economic factors'    
+  [3]: 'Model'  
+  [4]: 'Choose model with high predictive power'
+  [5]: 'Determine which factors most affect life expectancy'
+  [6]: 'Use results to predict future life expectancy'
+  ")
+```
+
 
 ## Exploratory Data Analysis
 
