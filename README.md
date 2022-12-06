@@ -2,6 +2,13 @@
 
 ## Notes:
 
+1. Ecnomic usefullusenes
+
+2. Technical Power
+(INteractions)
+3. Use the models to do more than model. Make decisions. for different audiences.
+
+
 Policy decisions
 Split by region. Govs make different decisions. 
 Emphasize different strategies for different countries. 
