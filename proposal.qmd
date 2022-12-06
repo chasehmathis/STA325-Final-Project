@@ -30,8 +30,8 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
         income_comp = "Income composition of resources") 
 ```
 
-- Our objective is to discover which health or economic factors of a nation impacts the country's average life expectancy the most
-- We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health
+-   Our objective is to discover which health or economic factors of a nation impacts the country's average life expectancy the most
+-   We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health
 
 ## Data Description
 
@@ -105,10 +105,10 @@ Flowchart to outline key steps?
 
 ## How Will we Select the Best Model?
 
-- We aim to select a model with good performance without sacrificing much inference
-- Our primary goals are to find what health or economic factors of a country impact their average life expectancy and allow for interpretable results that can be helpful to the field of global health
-- We will choose a model with relatively small test error and one whose results/predictions are interpretable
-- Thus, we will not necessarily choose the model with the lowest test MSE
+-   We aim to select a model with good performance without sacrificing much inference
+-   Our primary goals are to find what health or economic factors of a country impact their average life expectancy and allow for interpretable results that can be helpful to the field of global health
+-   We will choose a model with relatively small test error and one whose results/predictions are interpretable
+-   Thus, we will not necessarily choose the model with the lowest test MSE
 
 ## Exploratory Data Analysis
 
@@ -160,8 +160,9 @@ p3 <- ggplot(life, aes(x = Schooling, y = life_exp)) +
 p1 + p2 + p3 + 
   plot_layout(ncol = 3)
 ```
-## predictors
+
 ```{r}
+#| include: false
 life |> 
   select(-Country,-Year) |> 
   gather() |> 
