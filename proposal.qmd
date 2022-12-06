@@ -15,6 +15,7 @@ library(tidyverse)
 library(tidymodels)
 library(knitr)
 library(patchwork)
+library(Hmisc) # for histograms
 ggplot2::theme_set(ggplot2::theme_bw())
 life <- read_csv("data/life_exp.csv")
 ```
@@ -156,5 +157,16 @@ p3 <- ggplot(life, aes(x = Schooling, y = life_exp)) +
 
 ```{r}
 #| warning: false
-p1+p2/p3
+p1 + p2 + p3 + 
+  plot_layout(ncol = 3)
+```
+## predictors
+```{r}
+life |> 
+  select(-Country,-Year) |> 
+  gather() |> 
+  ggplot(aes(x = value))+
+  geom_density()+
+  facet_wrap(~key, scales = "free")
+
 ```
