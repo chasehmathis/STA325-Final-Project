@@ -1,0 +1,176 @@
+---
+title: "Life Expectancy"
+author: "Dillan Sant, Chase Mathis"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: packages
+#| echo: false
+#| message: false
+
+
+library(tidyverse)
+library(tidymodels)
+library(knitr)
+library(patchwork)
+library(broom)
+library(MASS)
+library(fuzzyjoin)
+#install.packages("fuzzyjoin")
+
+life <- read_csv(file = here::here("data/life_exp.csv"))
+
+worldData <- map_data("world")
+
+```
+
+```{r}
+## annoying fixing
+worldData <- worldData |> 
+  mutate(region = case_when(
+    region == "Antigua" ~ "Antigua and Barbuda",
+    region == "Bolivia" ~ "Bolivia (Plurinational State of)",
+    region == "Brunei" ~ "Brunei Darussalam",
+    region == "Ivory Coast" ~ "Côte d'Ivoire",
+    region == "Cape Verde" ~ "Cabo Verde",
+    region == "Democratic Republic of the Congo" ~ "Congo",
+    region == "Czech Republic" ~ "Czechia",
+    region == "North Korea" ~ "Democratic People's Republic of Korea",
+    region == "Iran" ~ "Iran (Islamic Republic of)",
+    region == "Laos" ~ "Lao People's Democratic Republic",
+    region == "Micronesia" ~ "Micronesia (Federated States of)",
+    region == "South Korea" ~ "Republic of Korea",
+    region == "Moldova" ~ "Republic of Moldova",
+    region == "Russia" ~ "Russian Federation",
+    region == "Syria" ~ "Syrian Arab Republic",
+    region == "Trinidad" ~ "Trinidad and Tobago",
+    region == "UK" ~ "United Kingdom of Great Britain and Northern Ireland",
+    region == "Tanzania" ~ "United Republic of Tanzania",
+    region == "USA" ~ "United States of America",
+    region == "Venezuela" ~ "Venezuela (Bolivarian Republic of)",
+    region == "Vietnam" ~ "Viet Nam",
+    region == "Saint Kitts" ~ "Saint Kitts and Nevis",                
+    region != "" ~ region
+  ))
+```
+
+```{r}
+life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Developed"))) %>%
+  rename(life_exp = "Life expectancy", adult_mortality = "Adult Mortality", 
+        infant_mortality = "infant deaths", pct_expend = "percentage expenditure", 
+        hep_b = "Hepatitis B", under_five_deaths = "under-five deaths", 
+        tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
+        thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
+        income_comp = "Income composition of resources") 
+```
+
+```{r}
+life |> 
+  filter(Year == 2015) |> 
+  dplyr::select(Country,life_exp) |> 
+  arrange(desc(life_exp)) |> 
+  slice(1:10) |> 
+  kable(col.names = c("Country", "Life Expectancy"), caption = "Life Expectancy of the Top 10 Countries")
+```
+
+## Overview of Data
+
+### Controllable Variables
+
+-   `Alcohol`: Alcohol consumption per capita (liters of pure alcohol)
+-   `pct_expend`: Expenditure on health as a percentage of GDP per capita
+-   `hep_b`: Hepatitis B immunization rate among 1-year-olds (%)
+-   `Polio`: Polio immunization rate among 1-year-olds (%)
+-   `tot_expend`: Government expenditure on healthcare as a percentage of total government expenditure
+-   `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
+-   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
+-   `Schooling`: Average number of years of schooling
+
+### Uncontrollable Variables (Nuiscance Variables)
+
+-   `BMI`: Average BMI (Body Mass Index) of entire country's population
+-   `GDP`: GDP per capita
+-   `Population`: Total population of country
+-   `thinnes_adole`: Prevalence of "thinness" among adolescents aged 10-19 (%)
+-   `thinness_infant`: Prevalence of "thinness" among infants aged 5-9 (%)
+-   `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
+-   `Status`: Developmental status of country (Developed or Developing)
+
+### Indicator Variables
+
+-   `under_five_deaths`: Number of deaths of 5-year-olds or younger per 1000 people
+-   `life_exp`: Average expectancy in country (years)
+-   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
+-   `infant_mortality`: Number of infants deaths per 1000 infants
+
+## Exploratory Data Analysis
+
+```{r}
+
+#recipe <- recipe(life) |> 
+#  update_role(Country, new_role = "id variable") |> 
+#  step_mutate(Country = as.character(Country)) |> 
+#  step_dummy(all_nominal()) |> 
+#  prep()
+#
+#life <- bake(recipe, life)
+#
+#
+#
+#p2 <- ggplot(life, aes(x = life_exp)) + 
+#  geom_histogram(bins = 20)+
+#  labs(
+#    x = "Life Expectancy",
+#    y = "County",
+#    title = "Distribution of Life Expectancy",
+#    caption = "Notice that the distribution is Left Skewed"
+#  )
+
+
+```
+
+```{r}
+#| warning: false
+p1 + p2 + 
+  plot_layout(ncol = 2)
+```
+
+```{r}
+deltaLifeExp <- life |> 
+  filter(Year == 2000 | Year == 2015) |> 
+  group_by(Country) |> 
+  mutate(delta_Life_Exp = lag(life_exp) - life_exp) |> 
+  relocate(delta_Life_Exp) |> 
+  ungroup() |> 
+  drop_na(delta_Life_Exp) 
+
+deltaLifeExp |> 
+  ggplot(aes(x = delta_Life_Exp)) + 
+  geom_histogram(bins = 10)
+
+life |> 
+  ggplot(aes(x = Year, y = life_exp, group = Year)) + 
+  geom_boxplot()
+
+```
+
+```{r}
+
+worldData |> 
+full_join(deltaLifeExp, by = c("region" = "Country")) |> 
+ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
+  geom_polygon() + 
+  scale_fill_continuous(type = "viridis")
+  
+
+```
+
+Generally countries increased life expectancy. Which ones did not?
+
+```{r}
+deltaLifeExp |> 
+  filter(delta_Life_Exp < 0)
+  
+```
