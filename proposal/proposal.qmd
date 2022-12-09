@@ -18,7 +18,7 @@ library(patchwork)
 library(Hmisc) # for histograms
 library(DiagrammeR)
 ggplot2::theme_set(ggplot2::theme_bw())
-life <- read_csv("data/life_exp.csv")
+life <- read_csv("dataprop/life_exp.csv")
 ```
 
 ```{r}
