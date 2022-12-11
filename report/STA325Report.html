@@ -16,69 +16,6 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -125,102 +62,147 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2,938 × 22
-   Country      Year Status    `Life expectan…` `Adult Mortali…` `infant deaths`
-   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;
- 1 Afghanistan  2015 Developi…             65                263              62
- 2 Afghanistan  2014 Developi…             59.9              271              64
- 3 Afghanistan  2013 Developi…             59.9              268              66
- 4 Afghanistan  2012 Developi…             59.5              272              69
- 5 Afghanistan  2011 Developi…             59.2              275              71
- 6 Afghanistan  2010 Developi…             58.8              279              74
- 7 Afghanistan  2009 Developi…             58.6              281              77
- 8 Afghanistan  2008 Developi…             58.1              287              80
- 9 Afghanistan  2007 Developi…             57.5              295              82
-10 Afghanistan  2006 Developi…             57.3              295              84
-# … with 2,928 more rows, and 16 more variables: Alcohol &lt;dbl&gt;,
-#   `percentage expenditure` &lt;dbl&gt;, `Hepatitis B` &lt;dbl&gt;, Measles &lt;dbl&gt;,
-#   BMI &lt;dbl&gt;, `under-five deaths` &lt;dbl&gt;, Polio &lt;dbl&gt;,
-#   `Total expenditure` &lt;dbl&gt;, Diphtheria &lt;dbl&gt;, `HIV/AIDS` &lt;dbl&gt;, GDP &lt;dbl&gt;,
-#   Population &lt;dbl&gt;, `thinness  1-19 years` &lt;dbl&gt;, `thinness 5-9 years` &lt;dbl&gt;,
-#   `Income composition of resources` &lt;dbl&gt;, Schooling &lt;dbl&gt;</code></pre>
-</div>
+
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>life <span class="ot">&lt;-</span> life <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Status =</span> <span class="fu">factor</span>(Status, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Developing"</span>, <span class="st">"Developed"</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">life_exp =</span> <span class="st">"Life expectancy"</span>, <span class="at">adult_mortality =</span> <span class="st">"Adult Mortality"</span>, </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">infant_mortality =</span> <span class="st">"infant deaths"</span>, <span class="at">pct_expend =</span> <span class="st">"percentage expenditure"</span>, </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">hep_b =</span> <span class="st">"Hepatitis B"</span>, <span class="at">under_five_deaths =</span> <span class="st">"under-five deaths"</span>, </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">tot_expend =</span> <span class="st">"Total expenditure"</span>, <span class="at">hiv_aids =</span> <span class="st">"HIV/AIDS"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">thinness_adole =</span> <span class="st">"thinness  1-19 years"</span>, <span class="at">thinness_infant =</span> <span class="st">"thinness 5-9 years"</span>, </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">income_comp =</span> <span class="st">"Income composition of resources"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Life Expectancy of the Top 10 Countries</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Country</th>
+<th style="text-align: right;">Life Expectancy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Slovenia</td>
+<td style="text-align: right;">88.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Denmark</td>
+<td style="text-align: right;">86.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chile</td>
+<td style="text-align: right;">85.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cyprus</td>
+<td style="text-align: right;">85.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Japan</td>
+<td style="text-align: right;">83.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Switzerland</td>
+<td style="text-align: right;">83.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Singapore</td>
+<td style="text-align: right;">83.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Australia</td>
+<td style="text-align: right;">82.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Spain</td>
+<td style="text-align: right;">82.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Iceland</td>
+<td style="text-align: right;">82.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="overview-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="overview-of-data">Overview of Data</h2>
+<section id="controllable-variables" class="level3">
+<h3 class="anchored" data-anchor-id="controllable-variables">Controllable Variables</h3>
+<ul>
+<li><code>Alcohol</code>: Alcohol consumption per capita (liters of pure alcohol)</li>
+<li><code>pct_expend</code>: Expenditure on health as a percentage of GDP per capita</li>
+<li><code>hep_b</code>: Hepatitis B immunization rate among 1-year-olds (%)</li>
+<li><code>Polio</code>: Polio immunization rate among 1-year-olds (%)</li>
+<li><code>tot_expend</code>: Government expenditure on healthcare as a percentage of total government expenditure</li>
+<li><code>Diphtheria</code>: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)</li>
+<li><code>hiv_aids</code>: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births</li>
+<li><code>Schooling</code>: Average number of years of schooling</li>
+</ul>
+</section>
+<section id="uncontrollable-variables-nuiscance-variables" class="level3">
+<h3 class="anchored" data-anchor-id="uncontrollable-variables-nuiscance-variables">Uncontrollable Variables (Nuiscance Variables)</h3>
+<ul>
+<li><code>BMI</code>: Average BMI (Body Mass Index) of entire country’s population</li>
+<li><code>GDP</code>: GDP per capita</li>
+<li><code>Population</code>: Total population of country</li>
+<li><code>thinnes_adole</code>: Prevalence of “thinness” among adolescents aged 10-19 (%)</li>
+<li><code>thinness_infant</code>: Prevalence of “thinness” among infants aged 5-9 (%)</li>
+<li><code>income_comp</code>: Human Development Index in terms of income composition of resources (0 to 1)</li>
+<li><code>Status</code>: Developmental status of country (Developed or Developing)</li>
+</ul>
+</section>
+<section id="indicator-variables" class="level3">
+<h3 class="anchored" data-anchor-id="indicator-variables">Indicator Variables</h3>
+<ul>
+<li><code>under_five_deaths</code>: Number of deaths of 5-year-olds or younger per 1000 people</li>
+<li><code>life_exp</code>: Average expectancy in country (years)</li>
+<li><code>adult_mortality</code>: Number of deaths of people aged 15-60 per 1000 people</li>
+<li><code>infant_mortality</code>: Number of infants deaths per 1000 infants</li>
+</ul>
+</section>
+</section>
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(life) <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_role</span>(Country, <span class="at">new_role =</span> <span class="st">"id variable"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">Country =</span> <span class="fu">as.character</span>(Country)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: The following variables are not factor vectors and will be ignored:
-`Country`</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>life <span class="ot">&lt;-</span> <span class="fu">bake</span>(recipe, life)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> corrr<span class="sc">::</span><span class="fu">correlate</span>(life) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, life_exp) <span class="sc">|&gt;</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term,life_exp), <span class="at">y =</span> life_exp, <span class="at">fill =</span> life_exp)) <span class="sc">+</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Term"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Correlation"</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Correlation"</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Correlation with Life Expectancy"</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Non-numeric variables removed from input: `Country`
-Correlation computed with
-• Method: 'pearson'
-• Missing treated using: 'pairwise.complete.obs'</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(life, <span class="fu">aes</span>(<span class="at">x =</span> life_exp)) <span class="sc">+</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Life Expectancy"</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"County"</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Life Expectancy"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Notice that the distribution is Left Skewed"</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>corrr<span class="sc">::</span><span class="fu">correlate</span>(life) <span class="sc">|&gt;</span> </span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, life_exp) <span class="sc">|&gt;</span> </span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term<span class="sc">!=</span> life_exp) <span class="sc">|&gt;</span> </span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">life_exp =</span> <span class="fu">abs</span>(life_exp)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(life_exp)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">2</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(term)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Non-numeric variables removed from input: `Country`
-Correlation computed with
-• Method: 'pearson'
-• Missing treated using: 'pairwise.complete.obs'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Schooling"   "income_comp"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># what is relationship between the two must importnat factors</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(life, <span class="fu">aes</span>(<span class="at">x =</span> Schooling, <span class="at">y =</span> life_exp)) <span class="sc">+</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3 <span class="sc">+</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 10 rows containing non-finite values (stat_boxplot).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Generally countries increased life expectancy. Which ones did not?</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 23
+  delta_Life_Exp Country   Year Status life_exp adult_mortality infant_mortality
+           &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;
+1         -0.400 Estonia   2000 Devel…     78               218                0
+2         -0.400 Grenada   2000 Devel…     74               182                0
+3         -1.10  Iraq      2000 Devel…     70               144               30
+4         -5.3   Libya     2000 Devel…     78               148                3
+5         -5     Paraguay  2000 Devel…     79               172                4
+6         -2     Romania   2000 Devel…     77               175                4
+7         -5.8   Saint V…  2000 Devel…     79               186                0
+8         -8.10  Syrian …  2000 Devel…     72.6             136               10
+9         -2.30  Yemen     2000 Devel…     68               252               48
+# … with 16 more variables: Alcohol &lt;dbl&gt;, pct_expend &lt;dbl&gt;, hep_b &lt;dbl&gt;,
+#   Measles &lt;dbl&gt;, BMI &lt;dbl&gt;, under_five_deaths &lt;dbl&gt;, Polio &lt;dbl&gt;,
+#   tot_expend &lt;dbl&gt;, Diphtheria &lt;dbl&gt;, hiv_aids &lt;dbl&gt;, GDP &lt;dbl&gt;,
+#   Population &lt;dbl&gt;, thinness_adole &lt;dbl&gt;, thinness_infant &lt;dbl&gt;,
+#   income_comp &lt;dbl&gt;, Schooling &lt;dbl&gt;</code></pre>
 </div>
 </div>
 </section>

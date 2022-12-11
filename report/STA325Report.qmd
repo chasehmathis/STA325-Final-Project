@@ -3,6 +3,8 @@ title: "Life Expectancy"
 author: "Dillan Sant, Chase Mathis"
 format: html
 editor: visual
+execute: 
+  echo: false
 ---
 
 ```{r}
@@ -21,7 +23,7 @@ library(fuzzyjoin)
 #install.packages("fuzzyjoin")
 
 life <- read_csv(file = here::here("data/life_exp.csv"))
-
+ggplot2::theme_set(ggplot2::theme_bw())
 worldData <- map_data("world")
 
 ```
@@ -132,12 +134,6 @@ life |>
 ```
 
 ```{r}
-#| warning: false
-p1 + p2 + 
-  plot_layout(ncol = 2)
-```
-
-```{r}
 deltaLifeExp <- life |> 
   filter(Year == 2000 | Year == 2015) |> 
   group_by(Country) |> 
@@ -148,7 +144,11 @@ deltaLifeExp <- life |>
 
 deltaLifeExp |> 
   ggplot(aes(x = delta_Life_Exp)) + 
-  geom_histogram(bins = 10)
+  geom_histogram(bins = 10) + 
+  labs(
+    x = "Change in Life Expectancy",
+    y = "Frequency"
+  )
 
 life |> 
   ggplot(aes(x = Year, y = life_exp, group = Year)) + 
