@@ -231,9 +231,4 @@ tidy(control_developed_fit) |>
   dplyr::select(term, estimate, p.value, significant) |> 
   arrange(desc(abs(estimate))) |> 
   kable()
-
-predict(control_developed_fit, training_life) |> 
-  bind_cols(training_life |> dplyr::select(life_exp, Country, Status)) |> 
-  drop_na() |> 
-  rmse(.pred, life_exp)
 ```
