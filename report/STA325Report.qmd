@@ -5,6 +5,8 @@ format: html
 editor: visual
 execute: 
   echo: false
+  message: false
+  warning: false
 ---
 
 ```{r}
@@ -29,7 +31,7 @@ worldData <- map_data("world")
 ```
 
 ```{r}
-## annoying fixing
+## fixing for graph plots
 worldData <- worldData |> 
   mutate(region = case_when(
     region == "Antigua" ~ "Antigua and Barbuda",
@@ -66,6 +68,15 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
         tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
         thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
         income_comp = "Income composition of resources") 
+```
+
+```{r}
+#| label: pre-processing
+set.seed(123)
+split <- initial_split(life)
+training_life <- training(split)
+testing_life <- testing(split)
+
 ```
 
 ```{r}
@@ -106,6 +117,12 @@ life |>
 -   `life_exp`: Average expectancy in country (years)
 -   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
 -   `infant_mortality`: Number of infants deaths per 1000 infants
+
+```{r}
+control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Diphtheria", "hiv_aids", "Schooling")
+uncontrol_vars <- c("BMI", "GDP", "Population", "thinnes_adole", "thinness_infant", "income_comp", "Status")
+indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_mortality")
+```
 
 ## Exploratory Data Analysis
 
@@ -167,10 +184,56 @@ ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
 
 ```
 
-Generally countries increased life expectancy. Which ones did not?
+Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy
 
 ```{r}
-deltaLifeExp |> 
+negativeLife <- deltaLifeExp |> 
   filter(delta_Life_Exp < 0)
-  
+```
+
+## Research Question 1: Given a country is developing, what can they do to increase their Life Expectancy?
+
+```{r}
+#| label: data-pre-processing
+
+life_control_developing <- recipe( ~ ., data = training_life) |> 
+  update_role(Country, new_role = "ID") |> 
+  step_filter(Status == "Developing") |>   # only developing countries
+  step_select(all_of(control_vars), Country, life_exp, skip = TRUE) |>    #only uses control variables
+    update_role(life_exp, new_role = "outcome")
+
+
+life_uncontrol_developing <- recipe(life_exp ~ ., data = training_life) |> 
+  update_role(Country, new_role = "ID") |> 
+  step_filter(Status == "Developing") |>   # only developing countries
+  step_select(all_of(uncontrol_vars), Country) |> #only uses control variables
+  step_dummy(all_nominal_predictors())
+```
+
+```{r}
+#| label: models
+
+linear_spec <- linear_reg() |> 
+  set_engine("lm")
+```
+
+```{r}
+wflow_control_developed <- workflow() %>%
+  add_model(linear_spec) %>%
+  add_recipe(life_control_developing) 
+
+
+control_developed_fit <- wflow_control_developed |> 
+  fit(data = training_life)
+
+tidy(control_developed_fit) |>
+  mutate(significant = if_else(p.value < 0.05, "Significant", "Not Significant")) |> 
+  dplyr::select(term, estimate, p.value, significant) |> 
+  arrange(desc(abs(estimate))) |> 
+  kable()
+
+predict(control_developed_fit, training_life) |> 
+  bind_cols(training_life |> dplyr::select(life_exp, Country, Status)) |> 
+  drop_na() |> 
+  rmse(.pred, life_exp)
 ```

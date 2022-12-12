@@ -71,6 +71,9 @@ ul.task-list{list-style: none;}
 
 </div>
 <div class="cell">
+
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Life Expectancy of the Top 10 Countries</caption>
@@ -160,6 +163,9 @@ ul.task-list{list-style: none;}
 <li><code>adult_mortality</code>: Number of deaths of people aged 15-60 per 1000 people</li>
 <li><code>infant_mortality</code>: Number of infants deaths per 1000 infants</li>
 </ul>
+<div class="cell">
+
+</div>
 </section>
 </section>
 <section id="exploratory-data-analysis" class="level2">
@@ -169,40 +175,104 @@ ul.task-list{list-style: none;}
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 10 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Generally countries increased life expectancy. Which ones did not?</p>
+<p>Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy</p>
 <div class="cell">
+
+</div>
+</section>
+<section id="research-question-1-given-a-country-is-developing-what-can-they-do-to-increase-their-life-expectancy" class="level2">
+<h2 class="anchored" data-anchor-id="research-question-1-given-a-country-is-developing-what-can-they-do-to-increase-their-life-expectancy">Research Question 1: Given a country is developing, what can they do to increase their Life Expectancy?</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: left;">significant</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">47.3544634</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Schooling</td>
+<td style="text-align: right;">1.4838656</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hiv_aids</td>
+<td style="text-align: right;">-0.6622054</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tot_expend</td>
+<td style="text-align: right;">0.0993622</td>
+<td style="text-align: right;">0.0651826</td>
+<td style="text-align: left;">Not Significant</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Alcohol</td>
+<td style="text-align: right;">-0.0807471</td>
+<td style="text-align: right;">0.0420498</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Polio</td>
+<td style="text-align: right;">0.0294019</td>
+<td style="text-align: right;">0.0000238</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Diphtheria</td>
+<td style="text-align: right;">0.0218701</td>
+<td style="text-align: right;">0.0067412</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pct_expend</td>
+<td style="text-align: right;">0.0014132</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">Significant</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hep_b</td>
+<td style="text-align: right;">-0.0004334</td>
+<td style="text-align: right;">0.9434882</td>
+<td style="text-align: left;">Not Significant</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 23
-  delta_Life_Exp Country   Year Status life_exp adult_mortality infant_mortality
-           &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;
-1         -0.400 Estonia   2000 Devel…     78               218                0
-2         -0.400 Grenada   2000 Devel…     74               182                0
-3         -1.10  Iraq      2000 Devel…     70               144               30
-4         -5.3   Libya     2000 Devel…     78               148                3
-5         -5     Paraguay  2000 Devel…     79               172                4
-6         -2     Romania   2000 Devel…     77               175                4
-7         -5.8   Saint V…  2000 Devel…     79               186                0
-8         -8.10  Syrian …  2000 Devel…     72.6             136               10
-9         -2.30  Yemen     2000 Devel…     68               252               48
-# … with 16 more variables: Alcohol &lt;dbl&gt;, pct_expend &lt;dbl&gt;, hep_b &lt;dbl&gt;,
-#   Measles &lt;dbl&gt;, BMI &lt;dbl&gt;, under_five_deaths &lt;dbl&gt;, Polio &lt;dbl&gt;,
-#   tot_expend &lt;dbl&gt;, Diphtheria &lt;dbl&gt;, hiv_aids &lt;dbl&gt;, GDP &lt;dbl&gt;,
-#   Population &lt;dbl&gt;, thinness_adole &lt;dbl&gt;, thinness_infant &lt;dbl&gt;,
-#   income_comp &lt;dbl&gt;, Schooling &lt;dbl&gt;</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard        4.51</code></pre>
 </div>
 </div>
 </section>
