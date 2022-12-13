@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.563">
+<meta name="generator" content="quarto-1.0.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -28,7 +28,7 @@ ul.task-list{list-style: none;}
 <link href="STA325Report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="STA325Report_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="STA325Report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="STA325Report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="STA325Report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -175,18 +175,74 @@ ul.task-list{list-style: none;}
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="STA325Report_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="STA325Report_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Change in Life Expectancy</th>
+<th style="text-align: left;">Country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-8.1</td>
+<td style="text-align: left;">Syrian Arab Republic</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-5.8</td>
+<td style="text-align: left;">Saint Vincent and the Grenadines</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-5.3</td>
+<td style="text-align: left;">Libya</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-5.0</td>
+<td style="text-align: left;">Paraguay</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-2.3</td>
+<td style="text-align: left;">Yemen</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-2.0</td>
+<td style="text-align: left;">Romania</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-1.1</td>
+<td style="text-align: left;">Iraq</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-0.4</td>
+<td style="text-align: left;">Estonia</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.4</td>
+<td style="text-align: left;">Grenada</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From 2000-2015, the nations that experienced a decrease in life expectancy are Syria, St.&nbsp;Vincent and the Grenandines, Libya, Paraguay, Yemen, Romania, Iraq, Estonia, and Grenada. All of these nations except for Romania are developing.</p>
 <div class="cell">
 
 </div>
@@ -270,11 +326,36 @@ ul.task-list{list-style: none;}
 </div>
 </div>
 </section>
+<section id="research-question-2-for-the-small-subset-of-countries-that-saw-a-decrease-in-life-expectancy-from-2000-2015-what-factors-led-to-this-decrease-in-life-expectancy" class="level2">
+<h2 class="anchored" data-anchor-id="research-question-2-for-the-small-subset-of-countries-that-saw-a-decrease-in-life-expectancy-from-2000-2015-what-factors-led-to-this-decrease-in-life-expectancy">Research Question 2: For the small subset of countries that saw a decrease in life expectancy from 2000-2015, what factors led to this decrease in life expectancy?</h2>
+<div class="cell">
+
+</div>
+<p>**Lots of NA values</p>
+</section>
 
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {

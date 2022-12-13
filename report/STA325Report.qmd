@@ -24,7 +24,7 @@ library(MASS)
 library(fuzzyjoin)
 #install.packages("fuzzyjoin")
 
-life <- read_csv(file = here::here("data/life_exp.csv"))
+life <- read_csv("data/life_exp.csv")
 ggplot2::theme_set(ggplot2::theme_bw())
 worldData <- map_data("world")
 
@@ -151,6 +151,12 @@ indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_
 ```
 
 ```{r}
+life %>% filter(Year == 2015) %>% ggplot(aes(x = GDP, y = life_exp, color = Status)) + 
+  geom_point()
+```
+
+
+```{r}
 deltaLifeExp <- life |> 
   filter(Year == 2000 | Year == 2015) |> 
   group_by(Country) |> 
@@ -184,7 +190,15 @@ ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
 
 ```
 
-Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy
+Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy.
+
+```{r}
+deltaLifeExp %>% filter(delta_Life_Exp < 0) %>% 
+  dplyr::select(delta_Life_Exp, Country) %>% arrange(delta_Life_Exp) %>%
+  rename("Change in Life Expectancy" = delta_Life_Exp) %>% kable()
+```
+
+From 2000-2015, the nations that experienced a decrease in life expectancy are Syria, St. Vincent and the Grenandines, Libya, Paraguay, Yemen, Romania, Iraq, Estonia, and Grenada. All of these nations except for Romania are developing.
 
 ```{r}
 negativeLife <- deltaLifeExp |> 
@@ -232,3 +246,15 @@ tidy(control_developed_fit) |>
   arrange(desc(abs(estimate))) |> 
   kable()
 ```
+
+## Research Question 2: For the small subset of countries that saw a decrease in life expectancy from 2000-2015, what factors led to this decrease in life expectancy?
+
+```{r}
+delta_cont <- life |> 
+  filter(Year == 2000 | Year == 2015) |> 
+  group_by(Country) |> 
+  mutate(delta_Life_Exp = lag(life_exp) - life_exp, delta_alc = lag(Alcohol) - Alcohol, delta_pe = lag(pct_expend) - pct_expend, delta_hep = lag(hep_b) - hep_b, delta_pol = lag(Polio) - Polio, delta_expend = lag(tot_expend) - tot_expend, delta_dip = lag(Diphtheria) - Diphtheria, delta_hiv = lag(hiv_aids) - hiv_aids, delta_school = lag(Schooling) - Schooling) |>
+  ungroup()
+```
+
+**Lots of NA values
