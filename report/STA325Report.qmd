@@ -247,7 +247,7 @@ tidy(control_developed_fit) |>
   kable()
 ```
 
-## Research Question 2: For the small subset of countries that saw a decrease in life expectancy from 2000-2015, what factors led to this decrease in life expectancy?
+### Include in first research question: For the small subset of countries that saw a decrease in life expectancy from 2000-2015, what factors led to this decrease in life expectancy?
 
 ```{r}
 delta_cont <- life |> 
@@ -257,4 +257,8 @@ delta_cont <- life |>
   ungroup()
 ```
 
-**Lots of NA values
+## Research Question 2: For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?
+
+## Conclusion
+- suggest in which factors specific nations should invest their money in based on modeling during both research questions, or, suggest not to increase investment in health care for nations with already high life expectancy,  
+
