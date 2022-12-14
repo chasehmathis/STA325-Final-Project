@@ -1,14 +1,16 @@
 ---
 title: "Life Expectancy"
 author: "Dillan Sant, Chase Mathis"
-format: html
+format:
+  pdf:
+    documentclass: article
 editor: visual
 execute: 
   echo: false
   message: false
   warning: false
 ---
-
+## Introduction
 ```{r}
 #| label: packages
 #| echo: false
@@ -155,7 +157,6 @@ life %>% filter(Year == 2015) %>% ggplot(aes(x = GDP, y = life_exp, color = Stat
   geom_point()
 ```
 
-
 ```{r}
 deltaLifeExp <- life |> 
   filter(Year == 2000 | Year == 2015) |> 
@@ -263,27 +264,27 @@ delta_cont <- life |>
 
 ### Introduction/EDA
 
-- start with providing scientific context, refer to article
-- shift towards problem, introduce research questions
-- give detailed description of data (see rubric), which predictors are uncontrollable, controllable, indicators
-- start EDA, show some simple, interpretable plots regarding different predictors, find different relationships among controllable variables
+-   start with providing scientific context, refer to article
+-   shift towards problem, introduce research questions
+-   give detailed description of data (see rubric), which predictors are uncontrollable, controllable, indicators
+-   start EDA, show some simple, interpretable plots regarding different predictors, find different relationships among controllable variables
 
 ### Modeling
 
-- Start with linear regression
-- check out interaction effects
-- ridge, lasso (for interpretable variable selection)
-- trees
-- stay away from uninterpretable methods like random forests, boosting
+-   Start with linear regression
+-   check out interaction effects
+-   ridge, lasso (for interpretable variable selection)
+-   trees
+-   stay away from uninterpretable methods like random forests, boosting
 
 ### Within Research Questions
 
-- focus on answering research question, using data/modeling merely as support for argument
-- make sure models and its results would be interpretable for global health professionals and governments
-- plot model diagnostics to assess models, make tables of results/predictions of models
-- give suggestions based on results to policy makers (ex. "this nation should put a greater prorportion of their total expenditure into health care to increase life expectancy")
+-   focus on answering research question, using data/modeling merely as support for argument
+-   make sure models and its results would be interpretable for global health professionals and governments
+-   plot model diagnostics to assess models, make tables of results/predictions of models
+-   give suggestions based on results to policy makers (ex. "this nation should put a greater prorportion of their total expenditure into health care to increase life expectancy")
 
 ### Conclusion
-- suggest in which factors specific nations should invest their money in based on modeling during both research questions, or, suggest not to increase investment in health care for nations with already high life expectancy
-- reference models, focus on interpretability and policy actions
 
+-   suggest in which factors specific nations should invest their money in based on modeling during both research questions, or, suggest not to increase investment in health care for nations with already high life expectancy
+-   reference models, focus on interpretability and policy actions
