@@ -123,7 +123,7 @@ life |>
 ```
 
 ```{r}
-control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Diphtheria", "hiv_aids", "Schooling")
+control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Diphtheria", "Schooling")
 uncontrol_vars <- c("BMI", "GDP", "Population", "thinnes_adole", "thinness_infant", "income_comp", "Status")
 indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_mortality")
 ```
@@ -215,9 +215,13 @@ life_uncontrol_developing <- recipe(life_exp ~ ., data = training_life) |>
 
 linear_spec <- linear_reg() |> 
   set_engine("lm")
+
+lasso_spec <- linear_reg(penalty = 0.01, mixture = 1) |> 
+  set_engine("glmnet")
 ```
 
 ```{r}
+
 wflow_control_developed <- workflow() %>%
   add_model(linear_spec) %>%
   add_recipe(life_control_developing) 
@@ -226,11 +230,39 @@ wflow_control_developed <- workflow() %>%
 control_developed_fit <- wflow_control_developed |> 
   fit(data = training_life)
 
-tidy(control_developed_fit) |>
+lmTable1 <- tidy(control_developed_fit) |>
   mutate(significant = if_else(p.value < 0.05, "Significant", "Not Significant")) |> 
   dplyr::select(term, estimate, p.value, significant) |> 
   arrange(desc(abs(estimate))) |> 
-  kable()
+  kable(col.names = c("Term", "Estimate", "P-Value", "Significant?"))
+
+lmTable1
+```
+
+### Linear Regression
+
+We first fit a linear regression model predicting life expectancy from our control variables we outline in our data dictionary. As one can see from the output, hepatitis B vaccination rate and total expenditure are not statistically significant predictors, while the rest are.
+
+At first glance, I notice a few interesting insights. For one, increasing Schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss seems to have the largest impact! Second, this regression model shows that HIV/AIDS vaccination rates are inversely related to life expectancy. One conclusion of this finding is that in countries where HIV/AIDS is not a problem, citizens are not vaccinated for it. In countries where it is a problem, more people are vaccinated for it, and more people die from it. **This is a short come of our limited data and should be noted. Alcohol** is naturally inversely related with life expectancy, while alcohol and a countries GDP may be related to one another.
+
+### Find a Sparse Model 
+
+```{r}
+#wflow_control_developed_lasso <- workflow() %>%
+#  add_model(lasso_spec) %>%
+#  add_recipe(life_control_developing) 
+#
+#
+#control_developed_fit_lasso <- wflow_control_developed_lasso |> 
+#  fit(data = training_life)
+#
+#lmTable1 <- tidy(control_developed_fit_lasso) |>
+#  mutate(significant = if_else(p.value < 0.05, "Significant", "Not Significant")) |> 
+#  dplyr::select(term, estimate, p.value, significant) |> 
+#  arrange(desc(abs(estimate))) |> 
+#  kable(col.names = c("Term", "Estimate", "P-Value", "Significant?"))
+#
+#lmTable1
 ```
 
 ### Include in first research question: For the small subset of countries that saw a decrease in life expectancy from 2000-2015, what factors led to this decrease in life expectancy?
@@ -286,7 +318,6 @@ delta_cont <- life |>
 -   `Polio`: Polio immunization rate among 1-year-olds (%)
 -   `tot_expend`: Government expenditure on healthcare as a percentage of total government expenditure
 -   `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
--   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
 -   `Schooling`: Average number of years of schooling
 
 ### Uncontrollable Variables (Nuiscance Variables)
@@ -305,3 +336,4 @@ delta_cont <- life |>
 -   `life_exp`: Average expectancy in country (years)
 -   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
 -   `infant_mortality`: Number of infants deaths per 1000 infants
+-   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
