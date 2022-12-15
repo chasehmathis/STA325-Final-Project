@@ -293,7 +293,7 @@ lmTable1
 
 ### Interaction Effects Through Trees?
 
-Very much depends on schooling. Also indicated in our other models. Schooling is THE most important thing to do in terms of increasing life expectancy.t
+The tree model illustrates the importance of schooling in increasing a country's life expectancy. The first decision the tree makes is off of schooling. In addition, schooling is the most prevalent decision the tree makes. Following the left sub-tree, interactions between schooling and other variables emerge. This is interesting given that the right sub-tree has much less interactions, and instead attempts to predict based off more School decisions.
 
 ```{r}
 wflow_controlled_tree <- workflow() %>%
@@ -343,6 +343,12 @@ delta_cont <- life |>
 -   make sure models and its results would be interpretable for global health professionals and governments
 -   plot model diagnostics to assess models, make tables of results/predictions of models
 -   give suggestions based on results to policy makers (ex. "this nation should put a greater prorportion of their total expenditure into health care to increase life expectancy")
+
+### 
+
+## Conclusion
+
+In this study, we investigated the relationship between life expectancy and numerous factors using interpretable statistical models. For countries that are still developing, schooling has the strongest positive relationship with having life expectancy, and we suggest to countries that are developing to fund and prioritize education. The regression models and tree model both provide the necessary evidence to support this conclusion.\*\*\* Question 2.
 
 ### Conclusion
 
