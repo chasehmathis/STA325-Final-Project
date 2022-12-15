@@ -40,6 +40,8 @@ library(patchwork)
 library(broom)
 library(MASS)
 library(fuzzyjoin)
+library(rpart.plot)
+#install.packages("rpart.plot")
 #install.packages("fuzzyjoin")
 
 life <- read_csv("data/life_exp.csv")
@@ -102,10 +104,32 @@ life |>
   slice(1:5)
 ```
 
-The data is mostly complete, but certain countries are missing data on population, GDP, and Hepatitis B. In other instances where one or two years are missing a specific countries data, we can fill in that value with the mean of the specific category.
+The data is mostly complete, but certain features are missing values. The missing data will have an impact on our modeling and interpretation which is something to consider for future work. For the time being, we will split up our missing values into two categories: (1) Missing values for entire countries and (2) Missing values for time ranges within a certain country. In regards to the first type of na value, we are left with little options. Many types of models will throw errors if there is missing data, so when fitting models that depend on predictors with missing data, we will throw away observations where missing data is present. In the other case, we propose using the mean of the other samples in that country to fill in the data. For instance, if Algeria has data on its alcohol consumption for all years except 2006, we assume that we should estimate 2006 using the mean. We continue with this methodology.
+
+```{r}
+percent_na <- 1-(nrow(na.omit(life))/nrow(life))
+life <- life |> 
+  group_by(Country) |> 
+  mutate(Alcohol = replace_na(Alcohol, mean(Alcohol, na.rm = TRUE)),
+         Population = replace_na(Population, mean(Population, na.rm = TRUE)),
+         hep_b = replace_na(hep_b, mean(hep_b, na.rm = TRUE)),
+         GDP = replace_na(GDP, mean(GDP, na.rm = TRUE)),
+        tot_expend = replace_na(tot_expend, mean(tot_expend, na.rm = TRUE)),
+        income_comp = replace_na(income_comp, mean(income_comp, na.rm = TRUE)),
+        Schooling = replace_na(Schooling, mean(Schooling, na.rm = TRUE))) |> 
+  ungroup()
+
+percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
+```
+
+After filling in na values with the mean, we are able to decrease the percent of na-values from `r 100*round(percent_na,3)`% to `r 100*round(percent_na_after,3)`%. This reduction will help us use more of the data so that we can find better conclusions for policy makers. We did not check to see the distributions of before omitting the na values match the distributions after\*\*\*.
+
+## Exploratory Data Analysis
 
 ```{r}
 #| label: pre-processing
+
+life <- na.omit(life)
 set.seed(123)
 split <- initial_split(life)
 training_life <- training(split)
@@ -127,8 +151,6 @@ control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Dipht
 uncontrol_vars <- c("BMI", "GDP", "Population", "thinnes_adole", "thinness_infant", "income_comp", "Status")
 indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_mortality")
 ```
-
-## Exploratory Data Analysis
 
 ```{r}
 life %>% 
@@ -194,6 +216,26 @@ negativeLife <- deltaLifeExp |>
 ## Research Question 1: Given a country is developing, what can they do to increase their Life Expectancy?
 
 ```{r}
+#| label: models
+
+linear_spec <- linear_reg() |> 
+  set_engine("lm")
+
+lasso_spec <- linear_reg(penalty = 0.01, mixture = 1) |> 
+  set_engine("glmnet")
+
+
+tree_spec <- decision_tree(mode = "regression") |> 
+  set_engine("rpart")
+```
+
+### Linear Regression
+
+We first fit a linear regression model predicting life expectancy from our control variables we outline in our data dictionary. As one can see from the output, hepatitis B vaccination rate and total expenditure are not statistically significant predictors, while the rest are.
+
+At first glance, I notice a few interesting insights. For one, increasing Schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss seems to have the largest impact! Second, this regression model shows that HIV/AIDS vaccination rates are inversely related to life expectancy. One conclusion of this finding is that in countries where HIV/AIDS is not a problem, citizens are not vaccinated for it. In countries where it is a problem, more people are vaccinated for it, and more people die from it. **This is a short come of our limited data and should be noted. Alcohol** is naturally inversely related with life expectancy, while alcohol and a countries GDP may be related to one another.
+
+```{r}
 #| label: data-pre-processing
 
 life_control_developing <- recipe( ~ ., data = training_life) |> 
@@ -208,16 +250,6 @@ life_uncontrol_developing <- recipe(life_exp ~ ., data = training_life) |>
   step_filter(Status == "Developing") |>   # only developing countries
   step_select(all_of(uncontrol_vars), Country) |> #only uses control variables
   step_dummy(all_nominal_predictors())
-```
-
-```{r}
-#| label: models
-
-linear_spec <- linear_reg() |> 
-  set_engine("lm")
-
-lasso_spec <- linear_reg(penalty = 0.01, mixture = 1) |> 
-  set_engine("glmnet")
 ```
 
 ```{r}
@@ -239,30 +271,41 @@ lmTable1 <- tidy(control_developed_fit) |>
 lmTable1
 ```
 
-### Linear Regression
-
-We first fit a linear regression model predicting life expectancy from our control variables we outline in our data dictionary. As one can see from the output, hepatitis B vaccination rate and total expenditure are not statistically significant predictors, while the rest are.
-
-At first glance, I notice a few interesting insights. For one, increasing Schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss seems to have the largest impact! Second, this regression model shows that HIV/AIDS vaccination rates are inversely related to life expectancy. One conclusion of this finding is that in countries where HIV/AIDS is not a problem, citizens are not vaccinated for it. In countries where it is a problem, more people are vaccinated for it, and more people die from it. **This is a short come of our limited data and should be noted. Alcohol** is naturally inversely related with life expectancy, while alcohol and a countries GDP may be related to one another.
-
-### Find a Sparse Model 
+### Find a Sparse Model
 
 ```{r}
-#wflow_control_developed_lasso <- workflow() %>%
-#  add_model(lasso_spec) %>%
-#  add_recipe(life_control_developing) 
-#
-#
-#control_developed_fit_lasso <- wflow_control_developed_lasso |> 
-#  fit(data = training_life)
-#
-#lmTable1 <- tidy(control_developed_fit_lasso) |>
-#  mutate(significant = if_else(p.value < 0.05, "Significant", "Not Significant")) |> 
-#  dplyr::select(term, estimate, p.value, significant) |> 
-#  arrange(desc(abs(estimate))) |> 
-#  kable(col.names = c("Term", "Estimate", "P-Value", "Significant?"))
-#
-#lmTable1
+wflow_control_developed_lasso <- workflow() %>%
+ add_model(lasso_spec) %>%
+ add_recipe(life_control_developing) 
+
+
+control_developed_fit_lasso <- wflow_control_developed_lasso |> 
+ fit(data = training_life)
+
+lmTable1 <- tidy(control_developed_fit_lasso) |> 
+ filter(estimate > 0.01) |> 
+ dplyr::select(term, estimate,penalty) |> 
+ arrange(desc(abs(estimate))) |> 
+ kable(col.names = c("Term", "Estimate", "Penalty"))
+
+lmTable1
+```
+
+### Interaction Effects Through Trees?
+
+Very much depends on schooling. Also indicated in our other models. Schooling is THE most important thing to do in terms of increasing life expectancy.t
+
+```{r}
+wflow_controlled_tree <- workflow() %>%
+ add_model(tree_spec) %>%
+ add_recipe(life_control_developing) 
+
+control_developed_fit_tree <- wflow_controlled_tree |> 
+ fit(data = training_life)
+
+control_developed_fit_tree <- control_developed_fit_tree$fit$fit$fit
+
+rpart.plot(control_developed_fit_tree,roundint = FALSE)
 ```
 
 ### Include in first research question: For the small subset of countries that saw a decrease in life expectancy from 2000-2015, what factors led to this decrease in life expectancy?
