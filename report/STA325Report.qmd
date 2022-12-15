@@ -4,13 +4,29 @@ author: "Dillan Sant, Chase Mathis"
 format:
   pdf:
     documentclass: article
+    geometry: 
+      - margin=1in
 editor: visual
 execute: 
   echo: false
   message: false
   warning: false
 ---
+
 ## Introduction
+
+Humans have experienced a meteoric rise in life expectancy in the past 200 years thanks to major advances in public health, but recently the momentum has stalled if not reversed.[^1] From a young age, we are taught to have a healthy diet, exercise regularly, and keep up personal hygiene to stay healthy and therefore live longer. However, macro-factors clearly play a role in how healthy ones life is. Health policy and its relationship with these macro-factors greatly impacts the health of individuals as this most recent pandemic has shown.
+
+[^1]: https://www.health.harvard.edu/blog/why-life-expectancy-in-the-us-is-falling-202210202835#:\~:text=A%20dramatic%20fall%20in%20life,just%20over%2076%2C%20in%202021.
+
+This research project aims to investigate the relationship between macro-factors and life expectancy for a developing and developed countries alike. Our research questions are the following:
+
+\(1\) *Given a country is developing, what can they do to increase their Life Expectancy?* This question hopes to guide methods for public policy and health experts in developing countries. Generally, developing countries have a lower life expectancy, so what does the data say about what is the most important?
+
+\(2\) *For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?* Developed countries have had the advantage of modern medicine for quite some time, so this question investigates if incremental increases in life expectancy are "worth" the increase in global health expenditure. Should countries focus on research in finding a "miracle" vaccine, or is there still work to be done for cheaper issues like vaccination and schooling.
+
+\_\_\_\_ collected the data. The data has 21 features, which we will outline below. Each observation in our data is a a country, the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forrests or baggging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
+
 ```{r}
 #| label: packages
 #| echo: false
@@ -29,8 +45,11 @@ library(fuzzyjoin)
 life <- read_csv("data/life_exp.csv")
 ggplot2::theme_set(ggplot2::theme_bw())
 worldData <- map_data("world")
-
 ```
+
+## Data
+
+\*\* Dillan can you do as you found the data\*\*
 
 ```{r}
 ## fixing for graph plots
@@ -72,6 +91,19 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
         income_comp = "Income composition of resources") 
 ```
 
+## Data Cleaning and Limitations in Our Data
+
+```{r}
+life |>  
+  summarise(across(everything(), ~ sum(is.na(.)))) |> 
+  pivot_longer(everything()) |> 
+  arrange(desc(value)) |> 
+  mutate(percent_missing = value/nrow(life)) |> 
+  slice(1:5)
+```
+
+The data is mostly complete, but certain countries are missing data on population, GDP, and Hepatitis B. In other instances where one or two years are missing a specific countries data, we can fill in that value with the mean of the specific category.
+
 ```{r}
 #| label: pre-processing
 set.seed(123)
@@ -90,36 +122,6 @@ life |>
   kable(col.names = c("Country", "Life Expectancy"), caption = "Life Expectancy of the Top 10 Countries")
 ```
 
-## Overview of Data
-
-### Controllable Variables
-
--   `Alcohol`: Alcohol consumption per capita (liters of pure alcohol)
--   `pct_expend`: Expenditure on health as a percentage of GDP per capita
--   `hep_b`: Hepatitis B immunization rate among 1-year-olds (%)
--   `Polio`: Polio immunization rate among 1-year-olds (%)
--   `tot_expend`: Government expenditure on healthcare as a percentage of total government expenditure
--   `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
--   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
--   `Schooling`: Average number of years of schooling
-
-### Uncontrollable Variables (Nuiscance Variables)
-
--   `BMI`: Average BMI (Body Mass Index) of entire country's population
--   `GDP`: GDP per capita
--   `Population`: Total population of country
--   `thinnes_adole`: Prevalence of "thinness" among adolescents aged 10-19 (%)
--   `thinness_infant`: Prevalence of "thinness" among infants aged 5-9 (%)
--   `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
--   `Status`: Developmental status of country (Developed or Developing)
-
-### Indicator Variables
-
--   `under_five_deaths`: Number of deaths of 5-year-olds or younger per 1000 people
--   `life_exp`: Average expectancy in country (years)
--   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
--   `infant_mortality`: Number of infants deaths per 1000 infants
-
 ```{r}
 control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Diphtheria", "hiv_aids", "Schooling")
 uncontrol_vars <- c("BMI", "GDP", "Population", "thinnes_adole", "thinness_infant", "income_comp", "Status")
@@ -129,31 +131,9 @@ indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_
 ## Exploratory Data Analysis
 
 ```{r}
-
-#recipe <- recipe(life) |> 
-#  update_role(Country, new_role = "id variable") |> 
-#  step_mutate(Country = as.character(Country)) |> 
-#  step_dummy(all_nominal()) |> 
-#  prep()
-#
-#life <- bake(recipe, life)
-#
-#
-#
-#p2 <- ggplot(life, aes(x = life_exp)) + 
-#  geom_histogram(bins = 20)+
-#  labs(
-#    x = "Life Expectancy",
-#    y = "County",
-#    title = "Distribution of Life Expectancy",
-#    caption = "Notice that the distribution is Left Skewed"
-#  )
-
-
-```
-
-```{r}
-life %>% filter(Year == 2015) %>% ggplot(aes(x = GDP, y = life_exp, color = Status)) + 
+life %>% 
+  filter(Year == 2015) %>% 
+  ggplot(aes(x = GDP, y = life_exp, color = Status)) + 
   geom_point()
 ```
 
@@ -166,29 +146,34 @@ deltaLifeExp <- life |>
   ungroup() |> 
   drop_na(delta_Life_Exp) 
 
-deltaLifeExp |> 
+p1 <- deltaLifeExp |> 
   ggplot(aes(x = delta_Life_Exp)) + 
   geom_histogram(bins = 10) + 
   labs(
     x = "Change in Life Expectancy",
-    y = "Frequency"
+    y = "Frequency",
+    title = "Distribution of the Change in Life Expectancy for Different Countries"
   )
 
-life |> 
+p2 <- life |> 
   ggplot(aes(x = Year, y = life_exp, group = Year)) + 
-  geom_boxplot()
+  geom_boxplot() + 
+  labs(
+    x = "Year",
+    y = "Life expectancy",
+    title = "Change in Life Expectancies Across the Globe"
+  )
 
-```
-
-```{r}
-
-worldData |> 
+p3 <- worldData |> 
 full_join(deltaLifeExp, by = c("region" = "Country")) |> 
 ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
   geom_polygon() + 
   scale_fill_continuous(type = "viridis")
-  
 
+```
+
+```{r}
+(p1 + p2)/p3
 ```
 
 Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy.
@@ -288,3 +273,35 @@ delta_cont <- life |>
 
 -   suggest in which factors specific nations should invest their money in based on modeling during both research questions, or, suggest not to increase investment in health care for nations with already high life expectancy
 -   reference models, focus on interpretability and policy actions
+
+## Appendix
+
+### Data Dictionary
+
+### Controllable Variables
+
+-   `Alcohol`: Alcohol consumption per capita (liters of pure alcohol)
+-   `pct_expend`: Expenditure on health as a percentage of GDP per capita
+-   `hep_b`: Hepatitis B immunization rate among 1-year-olds (%)
+-   `Polio`: Polio immunization rate among 1-year-olds (%)
+-   `tot_expend`: Government expenditure on healthcare as a percentage of total government expenditure
+-   `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
+-   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
+-   `Schooling`: Average number of years of schooling
+
+### Uncontrollable Variables (Nuiscance Variables)
+
+-   `BMI`: Average BMI (Body Mass Index) of entire country's population
+-   `GDP`: GDP per capita
+-   `Population`: Total population of country
+-   `thinnes_adole`: Prevalence of "thinness" among adolescents aged 10-19 (%)
+-   `thinness_infant`: Prevalence of "thinness" among infants aged 5-9 (%)
+-   `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
+-   `Status`: Developmental status of country (Developed or Developing)
+
+### Indicator Variables
+
+-   `under_five_deaths`: Number of deaths of 5-year-olds or younger per 1000 people
+-   `life_exp`: Average expectancy in country (years)
+-   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
+-   `infant_mortality`: Number of infants deaths per 1000 infants
