@@ -27,9 +27,9 @@ This research project aims to investigate the relationship between macro-factors
 
 Similar to how each person gets individual treatment from their primary care physician on their health, we think it is important to divide the research into the categories outlined above so the findings can be more specific and beneficial for nations who fall into those categories. We've also split up our predictors in a likewise fashion. We categorized "Control" variables as features that public policy and health experts can somewhat control. We then categorized "Nuisance" variables as those which governments have little control over such as Population, BMI, and GDP.
 
-Our first research question hopes to tackle the issue of inequality in life expectancy based off where one was born. Developing countries must increase their life expectancy so to match that of other developed countries. The economic benefit of a healthy, long-living country is clear and thus important to understand how to cultivate. The second one hopes to answer an important question of the utility of investing in public health measures. In other words, is there some law of nature that limits how old one can get? How beneficial is it to increase health expenditure? Instead, should governments invest in cutting-edge research to find miracle cures?
+Our first research question hopes to tackle the issue of inequality in life expectancy based off where one was born. Developing countries must increase their life expectancy so to match that of other developed countries. The economic benefit of a healthy, long-living country is clear and thus important to understand how to cultivate. The second one hopes to answer an important question of the utility of investing in public health measures. In other words, is there some law of nature that limits how old one can get? Can we find if there is some limit through data analysis? How beneficial is it to increase health expenditure, and instead should governments invest in cutting-edge research to find miracle cures?
 
-\_\_\_\_ collected the data. The data has 21 features, which we will outline below. Each observation in our data is a a country, the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forests or bagging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
+We will first show our exploratory data analysis, which will help us understand how to fit the data later on in the modeling stage. After EDA, we will explore our first research question using various interpretable models. Next, we will explore our second research question through the same method as the first. Finally, we will conclude and give advice to researchers in the field of public health and public policy in what direction they should prioritize.
 
 ```{r}
 #| label: packages
@@ -56,6 +56,8 @@ worldData <- map_data("world")
 ## Data
 
 \*\* Dillan can you do as you found the data\*\*
+
+\_\_\_\_ collected the data. The data has 21 features, which we will outline below. Each observation in our data is a a country, the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forests or bagging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
 
 ```{r}
 ## fixing for graph plots
