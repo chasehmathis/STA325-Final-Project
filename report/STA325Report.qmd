@@ -330,6 +330,9 @@ delta_cont <- life |>
 
 -   start with providing scientific context, refer to article
 -   shift towards problem, introduce research questions
+-   Context and previous research
+-   Why is this important? Goal
+-   Overview of the rest of the paper. Can do after
 -   give detailed description of data (see rubric), which predictors are uncontrollable, controllable, indicators
 -   start EDA, show some simple, interpretable plots regarding different predictors, find different relationships among controllable variables
 
