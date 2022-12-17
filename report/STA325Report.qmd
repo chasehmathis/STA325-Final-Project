@@ -45,6 +45,7 @@ library(broom)
 library(MASS)
 library(fuzzyjoin)
 library(rpart.plot)
+library(glmnet)
 #install.packages("rpart.plot")
 #install.packages("fuzzyjoin")
 
@@ -245,7 +246,7 @@ We first fit a linear regression model predicting life expectancy from our contr
 
 At first glance, I notice a few interesting insights. For one, increasing Schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss seems to have the largest impact! Second, Alcohol is naturally inversely related with life expectancy, while alcohol and a countries GDP may be related to one another.
 
-A shortcoming to Linear Regression in this setting is that i requires many assumptions, and some of these the data does not meet. For instance, linear regression assumes that the data is *independent*. However, because the data was sampled every year, each observation is dependent on the the one before it. This is a shortcoming in the model, and provides inspiration to future research in ways we can mitigate the dependency between observations.
+A shortcoming to Linear Regression in this setting is that it requires many assumptions, and some of these the data does not meet. For instance, linear regression assumes that the data is *independent*. However, because the data was sampled every year, each observation is dependent on the the one before it. This is a shortcoming in the model, and provides inspiration to future research in ways we can mitigate the dependency between observations.
 
 ```{r}
 #| label: data-pre-processing
@@ -285,7 +286,7 @@ lmTable1
 
 ### Find a Sparse Model
 
-We believe apriori that average life expectancy is related to only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization. In fitting the lasso model, we see that `Schooling`, `Diphteria`, and `Polio` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. Rates of vacinnation for Diphteria and Polia are also deemed important predictors.
+We believe a priori that average life expectancy is related to only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization. In fitting the lasso model, we see that `Schooling`, `Diphteria`, and `Polio` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. Rates of vacinnation for Diphteria and Polia are also deemed important predictors.
 
 ```{r}
 wflow_control_developed_lasso <- workflow() %>%
@@ -333,6 +334,17 @@ delta_cont <- life |>
 ```
 
 ## Research Question 2: For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?
+
+### Introduction and Pre-Modeling
+According to the Centers for Disease Control, the average life expectancy globally is roughly 75 years for women and 70 years for men, as of 2022. Since our data only contains life expectancy measures up to 2015, we will classify the top quartile of 2015 life expectancies as "high life expectancy". Subsequently, 34 countries make up our subset of nations we will consider as having high life expectancy in 2015. Note that the United States is not included in this subset. Interestingly, 19 of these 34 nations are classified as developing nations. This result is most likely due to the fact that a vast majority of the countires are classified as developing, so even when we take a subset of nations with the highest life expectancy, we still expect a lot of these nations to be developing. As with our first research question, we will fit models with the controllable variable as predictors on our 34 nations' data from 2000-2015 to determine just how cost efficient (or inefficient) it would be for a high life expectancy nation to further improve life expectancy.
+
+```{r}
+high_life_exp <- life %>% filter(Year == 2015) %>% summarize(Q3 = quantile(life_exp, 0.75)) %>% pull()
+hle_nations <- life %>% filter(Year == 2015) %>% filter(life_exp >= high_life_exp) %>% dplyr::select(Country)
+hle_life <- left_join(hle_nations, life)
+```
+
+
 
 ## Notes
 
