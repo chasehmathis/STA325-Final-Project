@@ -56,9 +56,7 @@ worldData <- map_data("world")
 
 ## Data
 
-\*\* Dillan can you do as you found the data\*\*
-
-\_\_\_\_ collected the data. The data has 21 features, which we will outline below. Each observation in our data is a a country, the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forests or bagging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
+The Global Health Observatory (GHO) collected the data and has made it public in their data repository for global health analysis. The features of this data contain global health data for specific countries collected by GHO and WHO as well as economic data collected from the United Nations' website. The data has 21 features which are outlined in the data dictionary in the appendix. Each observation in our data is a country and the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forests or bagging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
 
 ```{r}
 ## fixing for graph plots
@@ -288,6 +286,8 @@ lmTable1
 
 We believe a priori that average life expectancy is related to only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization. In fitting the lasso model, we see that `Schooling`, `Diphteria`, and `Polio` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. Rates of vacinnation for Diphteria and Polia are also deemed important predictors.
 
+**Chase, shouldn't you filter when abs(estimate) > 0.01? Cause alcohol is would be selected; feel like we shoudn't omit the negative betas**
+
 ```{r}
 wflow_control_developed_lasso <- workflow() %>%
  add_model(lasso_spec) %>%
@@ -336,15 +336,106 @@ delta_cont <- life |>
 ## Research Question 2: For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?
 
 ### Introduction and Pre-Modeling
-According to the Centers for Disease Control, the average life expectancy globally is roughly 75 years for women and 70 years for men, as of 2022. Since our data only contains life expectancy measures up to 2015, we will classify the top quartile of 2015 life expectancies as "high life expectancy". Subsequently, 34 countries make up our subset of nations we will consider as having high life expectancy in 2015. Note that the United States is not included in this subset. Interestingly, 19 of these 34 nations are classified as developing nations. This result is most likely due to the fact that a vast majority of the countires are classified as developing, so even when we take a subset of nations with the highest life expectancy, we still expect a lot of these nations to be developing. As with our first research question, we will fit models with the controllable variable as predictors on our 34 nations' data from 2000-2015 to determine just how cost efficient (or inefficient) it would be for a high life expectancy nation to further improve life expectancy.
+
+According to the Centers for Disease Control, the average life expectancy globally is roughly 75 years for women and 70 years for men, as of 2022. Since our data only contains life expectancy measures up to 2015, we will classify the top quartile of 2015 life expectancies as "high life expectancy". Subsequently, 34 countries make up our subset of nations we will consider as having high life expectancy in 2015. Note that the United States is not included in this subset. Interestingly, 19 of these 34 nations are classified as developing nations. This result is most likely due to the fact that a vast majority of the countries are classified as developing, so even when we take a subset of nations with the highest life expectancy, we still expect a lot of these nations to be developing. As with our first research question, we will fit models with the controllable variable as predictors on our 34 nations' data from 2000-2015 to determine just how cost efficient (or inefficient) it would be for a high life expectancy nation to further improve life expectancy. We will also do the same to the remaining nations to compare results.
 
 ```{r}
 high_life_exp <- life %>% filter(Year == 2015) %>% summarize(Q3 = quantile(life_exp, 0.75)) %>% pull()
 hle_nations <- life %>% filter(Year == 2015) %>% filter(life_exp >= high_life_exp) %>% dplyr::select(Country)
 hle_life <- left_join(hle_nations, life)
+rest_nations <- life %>% filter(Year == 2015) %>% filter(life_exp < high_life_exp) %>% dplyr::select(Country)
+rest_life <- left_join(rest_nations, life)
+```
+
+```{r}
+set.seed(123)
+split_hle <- initial_split(hle_life)
+hle_train <- training(split_hle)
+hle_test <- testing(split_hle)
+split_rest <- initial_split(rest_life)
+rest_train <- training(split_rest)
+rest_test <- testing(split_rest)
 ```
 
 
+### Fit Lasso Models to Assess Magnitude of Effect of Each Controllable Variable 
+
+Like earlier, we fit lasso regression models to both the high-life expectancy nations data set and the non-high-life expectancy data set. These lasso models will provide interpretable results of not ony which controllable variables are significant, but also how much a change in one of those variables would alter the expected life expectancy of a nation. The $\hat\beta$'s for these variables allow us to assess the expected effect of a government policy affecting one of the controllable variables on life expectancy. 
+
+```{r}
+life_control_hle <- recipe( ~ ., data = hle_train) %>%
+  update_role(Country, new_role = "ID") %>%
+  step_select(all_of(control_vars), Country, life_exp, skip = TRUE) %>%
+    update_role(life_exp, new_role = "outcome")
+life_control_rest <- recipe( ~ ., data = rest_train) %>%
+  update_role(Country, new_role = "ID") %>%
+  step_select(all_of(control_vars), Country, life_exp, skip = TRUE) %>%
+    update_role(life_exp, new_role = "outcome")
+```
+
+```{r}
+wflow_lasso_hle <- workflow() %>%
+  add_model(lasso_spec) %>%
+  add_recipe(life_control_hle) 
+lasso_hle_fit <- wflow_lasso_hle %>% 
+  fit(data = hle_train)
+lasso_hle_table <- tidy(lasso_hle_fit) %>%
+  filter(abs(estimate) > 0.01) %>% 
+  dplyr::select(term, estimate, penalty) %>%
+  arrange(desc(abs(estimate))) %>%
+  kable(col.names = c("Term", "Estimate", "Penalty"))
+lasso_hle_table
+```
+
+Fitting to nations with an already high-life expectancy, the significant variables selected are `Schooling`, `tot_expend`, `Alcohol`, and `Diphtheria`. The coefficient for `Schooling`, $\hat\beta_{1}$ is only 0.729. Comparing this to the `Schooling` coefficient from fitting the earlier lasso model on developing nations (2.094), it is clear that an increase in years of school results in diminishing marginal increases to life expectancy. An additional year of school for developing nations results in an expected increase in life expectancy of about 2 years, while an additional year of schooling for nations with a high life expectancy results in an expected increase in life expectancy of less than a year. **Find online data on how much an extra year of high-level schooling costs the government in country x** Consequently, an increase of investment in education for these high life expectancy nations is not worthwhile... 
+
+Furthermore, it would take an expected increase of government expenditure on healthcare as a percentage of total government expenditure by 11% to increase life expectancy by only 1 year, based on $\hat\beta_{2}$, the coefficient for `tot_expend`. This lasso model's output and results clearly illustrate that a marginal gain in life expectancy is not worth the required investment. The governments of these 34 nations would be better off maintaining their current expenditure on schooling and healthcare and focus their policy in other areas. 
+
+One problem to this model's fit is the significant, positive coefficient for the `Alcohol` variable, which contradicts previous results. This implies that an increase in nationwide alcohol consumption would lead to an expected increase in life expectancy, an illogical claim. It may be worth nothing that wealthier, high life expectancy nations could not experience the same magnitude negative effects of alcohol as other nations do. 
+
+```{r}
+wflow_lasso_rest <- workflow() %>%
+  add_model(lasso_spec) %>%
+  add_recipe(life_control_rest) 
+lasso_rest_fit <- wflow_lasso_rest %>% 
+  fit(data = rest_train)
+lasso_rest_table <- tidy(lasso_rest_fit) %>%
+  filter(abs(estimate) > 0.01) %>% 
+  dplyr::select(term, estimate, penalty) %>%
+  arrange(desc(abs(estimate))) %>%
+  kable(col.names = c("Term", "Estimate", "Penalty"))
+lasso_rest_table
+```
+
+The results of the remaining nations' lasso regression model support our conclusions from the developing nations research conducted earlier. Here, we see a much more significant effect of an increase in schooling for the nations with a life expectancy outside the global top 25%. Interestingly, the model displays a negative coefficient for `tot_expend`, indicating that an increase in spending in healthcare for this subset of nations might decrease life expectancy. Regardless, this further proves that length education is the most important influencer of life expectancy.
+
+### Fit Decision Tree to Visualize Possible Decisions
+
+The interpretability of decision trees is very beneficial to government officials and global health officials. The visualizations of these fitted model explicitly outline the decisions a government could make to increase life expectancy. While these models are for a subset of nations rather than individual nations, a policy-maker in a nation could ultimately use these generalized results for nation similar to theirs and employ corresponding policy or spending packages to increase their nation's life expectancy. 
+
+```{r}
+wflow_tree_hle <- workflow() %>%
+ add_model(tree_spec) %>%
+ add_recipe(life_control_hle) 
+tree_hle <- wflow_tree_hle |> 
+ fit(data = hle_train)
+tree_hle <- tree_hle$fit$fit$fit
+rpart.plot(tree_hle, roundint = FALSE)
+```
+
+```{r}
+wflow_tree_rest <- workflow() %>%
+ add_model(tree_spec) %>%
+ add_recipe(life_control_rest) 
+tree_rest <- wflow_tree_rest |> 
+ fit(data = rest_train)
+tree_rest <- tree_rest$fit$fit$fit
+rpart.plot(tree_rest, roundint = FALSE)
+```
+
+**look into fitting GAM**
+
+### GAM
 
 ## Notes
 

@@ -1,0 +1,207 @@
+---
+title: "STA325 Final Project Proposal"
+author: "Dillan Sant, Chase Mathis"
+format: revealjs
+execute: 
+  warning: false
+  echo: false
+editor: visual
+---
+
+## Executive Summary
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+library(tidymodels)
+library(knitr)
+library(patchwork)
+library(Hmisc) # for histograms
+library(DiagrammeR)
+ggplot2::theme_set(ggplot2::theme_bw())
+life <- read_csv("data/life_exp.csv")
+```
+
+```{r}
+life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Developed"))) %>%
+  rename(life_exp = "Life expectancy", adult_mortality = "Adult Mortality", 
+        infant_mortality = "infant deaths", pct_expend = "percentage expenditure", 
+        hep_b = "Hepatitis B", under_five_deaths = "under-five deaths", 
+        tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
+        thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
+        income_comp = "Income composition of resources") 
+```
+
+-   Our objective is to discover which health or economic factors of a nation impacts the country's average life expectancy the most
+
+-   We aim to craft a model that has high predictive power on life expectancy, but also allows for inferable results that could be interpreted by professionals in the field of global health
+
+-   Government officials can use these findings to make data-driven decisions about the health of their people
+
+## Data Description
+
+-   Data from the Global Healthy Observatory's (GHO) data repository, made public for global health data analysis
+-   Health factors collected from GHO repository, economic data collected from United Nations' website
+-   Each observation represents nation in a given year and includes health and economic data, as well as each nation's life expectancy for that year
+-   22 variables:
+    -   20 predictors (see next slides)
+    -   1 response: life expectancy, in years
+
+## Data Dictionary
+
+-   `Year`: Year country's GHO data
+-   `Status`: Developmental status of country (Developed or Developing)
+-   `life_exp`: Average expectancy in country (years)
+-   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
+-   `infant_mortality`: Number of infants deaths per 1000 infants
+
+## Data Dictionary
+
+-   `Alcohol`: Alcohol consumption per capita (liters of pure alcohol)
+-   `pct_expend`: Expenditure on health as a percentage of GDP per capita
+-   `hep_b`: Hepatitis B immunization rate among 1-year-olds (%)
+-   `Measles`: Number of Measles cases reported per 1000 people
+-   `BMI`: Average BMI (Body Mass Index) of entire country's population
+
+## Data Dictionary
+
+-   `under_five_deaths`: Number of deaths of 5-year-olds or younger per 1000 people
+-   `Polio`: Polio immunization rate among 1-year-olds (%)
+-   `tot_expend`: Government expenditure on healthcare as a percentage of total government expenditure
+-   `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
+-   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
+
+## Data Dictionary
+
+-   `GDP`: GDP per capita
+-   `Population`: Total population of country
+-   `thinnes_adole`: Prevalence of "thinness" among adolescents aged 10-19 (%)
+-   `thinness_infant`: Prevalence of "thinness" among infants aged 5-9 (%)
+-   `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
+-   `Schooling`: Average number of years of schooling
+
+## Inference and Prediction Goals
+
+-   There are some important research questions that the dataset can help us answer. For instance:
+
+    -   What impacts `Life Expectancy` the most?
+
+    -   What is the relationship between `Life Expectancy` and the other predictors?
+
+    -   Can we predict an increase or decrease in `Life Expectancy` in the future? i.e. Time Series Analysis?
+
+    -   How well can we predict `Life Expectancy` given the data we have?
+
+## Possible Modeling Strategies
+
+1.  Lasso Regression:
+    -   This model has many predictors. Can we select the most important ones using Lasso?
+2.  Linear and Nonlinear Regression
+3.  Boosting, Bagging, and general Trees:
+    1.  Given that the relationship between Linear and Nonlinear Regression is not linear, can we use `Tree-based models` to predict?
+
+## How Will we Select the Best Model?
+
+-   We aim to select a model with good performance without sacrificing much inference
+-   Our primary goals are to find what health or economic factors of a country impact their average life expectancy and allow for interpretable results that can be helpful to the field of global health
+-   We will choose a model with relatively small test error and one whose results/predictions are interpretable
+-   Thus, we will not necessarily choose the model with the lowest test MSE
+
+## Roadmap
+
+```{r}
+DiagrammeR::grViz(diagram = "digraph flowchart {
+  node [fontname = arial, shape = oval, color = Lavender, style = filled]
+  tab1 [label = '@@1']
+  tab2 [label = '@@2']
+  tab3 [label = '@@3']
+  tab4 [label = '@@4']
+  tab5 [label = '@@5']
+  tab6 [label = '@@6']
+  
+  tab1 -> tab2
+  tab2 -> tab3
+  tab3 -> tab4
+  tab3 -> tab5
+  tab4 -> tab6
+  tab5 -> tab6
+}
+  
+  [1]: 'Gather and clean data'
+  [2]: 'Explore relationships between health and economic factors'    
+  [3]: 'Model'  
+  [4]: 'Choose model with high predictive power'
+  [5]: 'Determine which factors most affect life expectancy'
+  [6]: 'Use results to predict future life expectancy'
+  ")
+```
+
+## Exploratory Data Analysis
+
+```{r}
+
+recipe <- recipe(life) |> 
+  update_role(Country, new_role = "id variable") |> 
+  step_mutate(Country = as.character(Country)) |> 
+  step_dummy(all_nominal()) |> 
+  prep()
+
+life <- bake(recipe, life)
+
+p1 <- corrr::correlate(life) |> 
+  select(term, life_exp) |> 
+  ggplot(aes(x = reorder(term,life_exp), y = life_exp, fill = life_exp)) + 
+  geom_col() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  labs(
+    x = "Term",
+    y = "Correlation",
+    fill = "Correlation",
+    title = "Correlation with Life Expectancy"
+  )
+
+p2 <- ggplot(life, aes(x = life_exp)) + 
+  geom_histogram(bins = 20) + 
+  labs(
+    x = "Life Expectancy",
+    y = "County",
+    title = "Distribution of Life Expectancy",
+    caption = "Notice that the distribution is Left Skewed"
+  )
+
+corrr::correlate(life) |> 
+  select(term, life_exp) |> 
+  filter(term!= life_exp) |> 
+  mutate(life_exp = abs(life_exp)) |> 
+  arrange(desc(life_exp)) |> 
+  head(2) |> 
+  pull(term)
+# what is relationship between the two must importnat factors
+p3 <- ggplot(life, aes(x = Schooling, y = life_exp)) + 
+  geom_point()
+```
+
+```{r}
+#| warning: false
+p1 + p2 + p3 + 
+  plot_layout(ncol = 3)
+```
+
+## Predictors
+
+```{r}
+
+life |> 
+  select(-Country,-Year) |> 
+  gather() |> 
+  ggplot(aes(x = value))+
+  geom_density()+
+  facet_wrap(~key, scales = "free")
+
+```
+
+```{r}
+ggplot(data = mj, aes(x = DATE, y = .data[[names(mj)[17]]])) + 
+  geom_line(aes(group = 1)) + 
+  theme_bw() + 
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+```
