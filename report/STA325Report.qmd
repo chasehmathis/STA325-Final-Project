@@ -134,18 +134,12 @@ percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 After filling in null values with the mean, we are able to decrease the percent of na-values from `r 100*round(percent_na,3)`% to `r 100*round(percent_na_after,3)`%. This reduction will help us use more of the data so that we can find better conclusions for policy makers.
 
 ## Exploratory Data Analysis
-```{r}
-
-```
-
 
 ```{r}
 control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Diphtheria", "Schooling")
 uncontrol_vars <- c("BMI", "GDP", "Population", "thinnes_adole", "thinness_infant", "income_comp", "Status")
 indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_mortality")
 ```
-
-
 
 ```{r}
 deltaLifeExp <- life |> 
@@ -159,6 +153,7 @@ deltaLifeExp <- life |>
 p1 <- deltaLifeExp |> 
   ggplot(aes(x = delta_Life_Exp)) + 
   geom_histogram(bins = 10) + 
+  theme(aspect.ratio = 3/4) +
   labs(
     x = "Change in Life Expectancy",
     y = "Frequency",
@@ -168,6 +163,7 @@ p1 <- deltaLifeExp |>
 p2 <- life |> 
   ggplot(aes(x = Year, y = life_exp, group = Year)) + 
   geom_boxplot() + 
+  theme(aspect.ratio = 3/4) +
   labs(
     x = "Year",
     y = "Life expectancy",
@@ -178,13 +174,21 @@ p3 <- worldData |>
 full_join(deltaLifeExp, by = c("region" = "Country")) |> 
 ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
   geom_polygon() + 
-  scale_fill_continuous(type = "viridis")
+  scale_fill_continuous(type = "viridis") + 
+  theme(aspect.ratio = 3/4) +
+  labs(
+    x = "Longitude",
+    y = "Latitude",
+    fill = "Change in Life Expectancy"
+  )
 
 ```
 
 ```{r}
+#| fig-align: center
 p3
 ```
+
 Generally countries increased life expectancy, especially in Sub-Saharan Africa. Many of the developed countries experienced little increase in life expectancy.
 
 ```{r}
@@ -193,13 +197,10 @@ life %>%
   ggplot(aes(x = Alcohol, y = life_exp, color = Status)) + 
   geom_point()
 ```
-```
 
 ```{r}
 p1 + p2
 ```
-
-
 
 ```{r}
 deltaLifeExp %>% filter(delta_Life_Exp < 0) %>% 
