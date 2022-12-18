@@ -1,0 +1,25 @@
+---
+title: "STA325 Case Study"
+author: "Chase Mathis, Dillan Sant"
+format: revealjs
+execute: 
+  warning: false
+  echo: false
+editor: visual
+---
+
+## Introduction
+
+## Data
+
+## Methodology
+
+## Life Expectancy in Developing Nations
+
+## Life Expectancy in "Healthy" Nations
+
+## Results
+
+## Relevance
+
+## Conclusion
