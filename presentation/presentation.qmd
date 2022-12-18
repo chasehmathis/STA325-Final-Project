@@ -118,6 +118,23 @@ life <- life |>
 percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
 
+::: columns
+::: {.column width="60%"}
+-   Data collected from the Global Health Observatory (GHO) and United Nations website via Kaggle
+
+-   22 variables
+
+-   \`
+:::
+
+::: {.column width="40%"}
+```{r}
+#| fig-align: right
+na_table
+```
+:::
+:::
+
 ## Limitations
 
 ::: columns
