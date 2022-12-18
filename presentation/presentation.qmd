@@ -229,6 +229,86 @@ na_table
 
 ## Life Expectancy in "Healthy" Nations
 
+```{r}
+#| label: models
+
+linear_spec <- linear_reg() |> 
+  set_engine("lm")
+
+lasso_spec <- linear_reg(penalty = 0.01, mixture = 1) |> 
+  set_engine("glmnet")
+
+
+tree_spec <- decision_tree(mode = "regression") |> 
+  set_engine("rpart")
+
+gam_spec <- gen_additive_mod(mode = "regression") |> 
+  set_engine("mgcv")
+```
+
+```{r, message = FALSE}
+high_life_exp <- life %>% filter(Year == 2015) %>% summarize(Q3 = quantile(life_exp, 0.75)) %>% pull()
+hle_nations <- life %>% filter(Year == 2015) %>% filter(life_exp >= high_life_exp) %>% dplyr::select(Country)
+hle_life <- left_join(hle_nations, life)
+rest_nations <- life %>% filter(Year == 2015) %>% filter(life_exp < high_life_exp) %>% dplyr::select(Country)
+rest_life <- left_join(rest_nations, life)
+```
+
+```{r}
+set.seed(123)
+split_hle <- initial_split(hle_life)
+hle_train <- training(split_hle)
+hle_test <- testing(split_hle)
+split_rest <- initial_split(rest_life)
+rest_train <- training(split_rest)
+rest_test <- testing(split_rest)
+```
+
+```{r}
+life_control_hle <- recipe( ~ ., data = hle_train) %>%
+  update_role(Country, new_role = "ID") %>%
+  step_select(all_of(control_vars), Country, life_exp, skip = TRUE) %>%
+    update_role(life_exp, new_role = "outcome")
+life_control_rest <- recipe( ~ ., data = rest_train) %>%
+  update_role(Country, new_role = "ID") %>%
+  step_select(all_of(control_vars), Country, life_exp, skip = TRUE) %>%
+    update_role(life_exp, new_role = "outcome")
+```
+
+```{r}
+hle_tab_le <- hle_train %>% filter(Year == 2015) %>% arrange(desc(life_exp)) %>% slice(1:8) %>% dplyr::select(Country, life_exp) %>% kable(digits = 2)
+```
+
+::: columns
+::: {.column width="60%"}
+-   Analyze a subset of nations considered having high life expectancy
+-   Determine significance of controllable variables
+-   Decide if it is economically worthwhile to invest further in increase life expectancy
+:::
+
+::: {.column width="40%"}
+```{r}
+#| fig-align: right
+hle_tab_le
+```
+:::
+:::
+
+## Lasso to Select Features
+
+::: columns
+::: {.column width="60%"}
+-   Use lasso regression to select important controllable variables
+-   Analyze why predictors may have been selected and their corresponding $\hat\beta$ values
+-   Compare results of high life expectancy nations to all other nations
+:::
+
+::: {.column width="40%"}
+Lasso fit for high life expectancy nations ![](images/lasso.png){width="304"} Lasso fit for other nations![](images/lasso_rest.png){width="304"}
+:::
+:::
+
+
 ## Results
 
 ## Conclusion
