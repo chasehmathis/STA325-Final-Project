@@ -308,6 +308,30 @@ Lasso fit for high life expectancy nations ![](images/lasso.png){width="304"} La
 :::
 :::
 
+## Trees to Visualize Interaction Effects
+
+::: columns
+::: {.column width="50%"}
+Tree Fit for High Life Expectancy Nations![](images/tree_hle.png)
+:::
+
+::: {.column width="50%"}
+Tree Fit for All Other Nations![](images/tree_rest.png)
+:::
+:::
+
+## GAMS
+
+::: columns
+::: {.column width="50%"}
+![](images/gam_hle.png)
+:::
+
+::: {.column width="50%"}
+![](images/gam_rest.png)
+:::
+:::
+
 ## Conclusion
 
 ::: columns
