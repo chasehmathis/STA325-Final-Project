@@ -81,6 +81,20 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 
 ## Relevance
 
+::: columns
+::: {.column width="40%"}
+-   The data has null values which throw errors when we fit models
+
+-   We attempt to decrease the proportion of null values by taking the mean
+
+-   In the end, we decrease the proportion
+:::
+
+::: {.column width="60%"}
+![](images/fauci.jpeg)
+:::
+:::
+
 ## Research Questions
 
 -   The research is guided by two research questions:
@@ -118,7 +132,7 @@ life <- life |>
 percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
 
-## Limitations
+## Limitations of Data
 
 ::: columns
 ::: {.column width="60%"}
@@ -126,7 +140,7 @@ percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 
 -   We attempt to decrease the proportion of null values by taking the mean
 
--   In the end, we decrease the proportion from `r percent_na` to `r percent_na_after`
+-   In the end, we decrease the proportion from `r round(percent_na,3)` to `r round(percent_na_after,3)`
 :::
 
 ::: {.column width="40%"}
