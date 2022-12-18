@@ -5,9 +5,9 @@
 <script src="presentation_files/libs/quarto-html/popper.min.js"></script>
 <script src="presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet">
 <link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.0.36">
+  <meta name="generator" content="quarto-0.9.563">
 
   <meta name="author" content="Chase Mathis, Dillan Sant">
   <title>Investigating Controllable Factors of Life Expectancy</title>
@@ -314,7 +314,7 @@
     }
   </style>
 </head>
-<body class="quarto-light">
+<body>
   <div class="reveal">
     <div class="slides">
 
@@ -323,12 +323,27 @@
   <p class="author">Chase Mathis, Dillan Sant</p>
 </section>
 
+<section class="slide level2">
+
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+</section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <ul>
 <li>We aim to investigate the relationship between controllable macro-factors and life expectancy for developing nations and those who already have high life expectancy.</li>
 <li>Our audience are global health experts as well as government officials and policymakers and aim to give them suggestions based on our finds on what should be prioritized in keeping their citizens healthy and increasing life expectancy</li>
 </ul>
+</section>
+<section id="relevance" class="slide level2">
+<h2>Relevance</h2>
 </section>
 <section id="research-questions" class="slide level2">
 <h2>Research Questions</h2>
@@ -343,6 +358,12 @@
 </section>
 <section id="data" class="slide level2">
 <h2>Data</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
 </section>
 <section id="methodology" class="slide level2">
 <h2>Methodology</h2>
@@ -355,9 +376,6 @@
 </section>
 <section id="results" class="slide level2">
 <h2>Results</h2>
-</section>
-<section id="relevance" class="slide level2">
-<h2>Relevance</h2>
 </section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
@@ -576,26 +594,50 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          // dispatch for htmlwidgets
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for reveal
+        if (window.Reveal) {
+          window.Reveal.addEventListener("slidechanged", function(event) {
+            fireSlideChanged(event.previousSlide, event.currentSlide);
+          });
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
-      const toggleBodyColorMode = (bsSheetEl) => {
-        const mode = bsSheetEl.getAttribute("data-mode");
-        const bodyEl = window.document.querySelector("body");
-        if (mode === "dark") {
-          bodyEl.classList.add("quarto-dark");
-          bodyEl.classList.remove("quarto-light");
-        } else {
-          bodyEl.classList.add("quarto-light");
-          bodyEl.classList.remove("quarto-dark");
-        }
-      }
-      const toggleBodyColorPrimary = () => {
-        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-        if (bsSheetEl) {
-          toggleBodyColorMode(bsSheetEl);
-        }
-      }
-      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);

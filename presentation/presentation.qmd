@@ -8,19 +8,115 @@ execute:
 editor: visual
 ---
 
+```{r}
+#| label: data-libraries
+
+
+library(tidyverse)
+library(tidymodels)
+library(knitr)
+library(patchwork)
+library(broom)
+library(MASS)
+library(fuzzyjoin)
+library(rpart.plot)
+library(glmnet)
+library(mgcv)
+library(ggeffects)
+#install.packages("rpart.plot")
+#install.packages("fuzzyjoin")
+
+life <- read_csv(here::here("data/life_exp.csv"))
+ggplot2::theme_set(ggplot2::theme_bw())
+worldData <- map_data("world")
+```
+
+```{r}
+#| label: fix-world-data
+worldData <- worldData |> 
+  mutate(region = case_when(
+    region == "Antigua" ~ "Antigua and Barbuda",
+    region == "Bolivia" ~ "Bolivia (Plurinational State of)",
+    region == "Brunei" ~ "Brunei Darussalam",
+    region == "Ivory Coast" ~ "Côte d'Ivoire",
+    region == "Cape Verde" ~ "Cabo Verde",
+    region == "Democratic Republic of the Congo" ~ "Congo",
+    region == "Czech Republic" ~ "Czechia",
+    region == "North Korea" ~ "Democratic People's Republic of Korea",
+    region == "Iran" ~ "Iran (Islamic Republic of)",
+    region == "Laos" ~ "Lao People's Democratic Republic",
+    region == "Micronesia" ~ "Micronesia (Federated States of)",
+    region == "South Korea" ~ "Republic of Korea",
+    region == "Moldova" ~ "Republic of Moldova",
+    region == "Russia" ~ "Russian Federation",
+    region == "Syria" ~ "Syrian Arab Republic",
+    region == "Trinidad" ~ "Trinidad and Tobago",
+    region == "UK" ~ "United Kingdom of Great Britain and Northern Ireland",
+    region == "Tanzania" ~ "United Republic of Tanzania",
+    region == "USA" ~ "United States of America",
+    region == "Venezuela" ~ "Venezuela (Bolivarian Republic of)",
+    region == "Vietnam" ~ "Viet Nam",
+    region == "Saint Kitts" ~ "Saint Kitts and Nevis",                
+    region != "" ~ region
+  ))
+```
+
+```{r}
+#| label: rename
+
+life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Developed"))) %>%
+  rename(life_exp = "Life expectancy", adult_mortality = "Adult Mortality", 
+        infant_mortality = "infant deaths", pct_expend = "percentage expenditure", 
+        hep_b = "Hepatitis B", under_five_deaths = "under-five deaths", 
+        tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
+        thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
+        income_comp = "Income composition of resources") 
+
+```
+
 ## Introduction
 
-- We aim to investigate the relationship between controllable macro-factors and life expectancy for developing nations and those who already have high life expectancy. 
-- Our audience are global health experts as well as government officials and policymakers and aim to give them suggestions based on our finds on what should be prioritized in keeping their citizens healthy and increasing life expectancy
+-   We aim to investigate the relationship between controllable macro-factors and life expectancy for developing nations and those who already have high life expectancy.
+-   Our audience are global health experts as well as government officials and policymakers and aim to give them suggestions based on our finds on what should be prioritized in keeping their citizens healthy and increasing life expectancy
+
+## Relevance
 
 ## Research Questions
 
-- The research is guided by two research questions:
-  - \(1\) *Given a country is developing, what can they do to increase their Life Expectancy?*
-  - \(2\) *For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?*
-- Answering these questions gives us the flexibility to suggest tailored advice for nations depending on their health status.
+-   The research is guided by two research questions:
+    -   \(1\) *Given a country is developing, what can they do to increase their Life Expectancy?*
+    -   \(2\) *For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?*
+-   Answering these questions gives us the flexibility to suggest tailored advice for nations depending on their health status.
 
 ## Data
+
+```{r}
+#| label: na-values-table
+na_table <- life |>  
+  summarise(across(everything(), ~ sum(is.na(.)))) |> 
+  pivot_longer(everything()) |> 
+  arrange(desc(value)) |> 
+  mutate(percent_missing =  (100*value/nrow(life))) |> 
+  slice(1:5) |> 
+  dplyr::select(-value) |> 
+  kable(col.names = c("Term", "Percent Missing"), caption = c("Variables with Missing Values"), digits = 2)
+```
+
+```{r}
+percent_na <- 1-(nrow(na.omit(life))/nrow(life))
+life <- life |> 
+  group_by(Country) |> 
+  mutate(Alcohol = replace_na(Alcohol, mean(Alcohol, na.rm = TRUE)),
+         Population = replace_na(Population, mean(Population, na.rm = TRUE)),
+         hep_b = replace_na(hep_b, mean(hep_b, na.rm = TRUE)),
+         GDP = replace_na(GDP, mean(GDP, na.rm = TRUE)),
+        tot_expend = replace_na(tot_expend, mean(tot_expend, na.rm = TRUE)),
+        income_comp = replace_na(income_comp, mean(income_comp, na.rm = TRUE)),
+        Schooling = replace_na(Schooling, mean(Schooling, na.rm = TRUE))) |> 
+  ungroup()
+
+percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
+```
 
 ## Methodology
 
@@ -29,7 +125,5 @@ editor: visual
 ## Life Expectancy in "Healthy" Nations
 
 ## Results
-
-## Relevance
 
 ## Conclusion
