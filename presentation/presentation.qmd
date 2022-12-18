@@ -215,6 +215,18 @@ na_table
 :::
 :::
 
+## Linear Regression
+
+![](images/RegressionChase.png)
+
+## Trees
+
+![](images/TreeChase.png)
+
+## GAMS
+
+![](images/GAMChase.png)
+
 ## Life Expectancy in "Healthy" Nations
 
 ## Results
