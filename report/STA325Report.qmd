@@ -15,17 +15,17 @@ execute:
 
 ## Introduction
 
-Humans have experienced a tremendous rise in life expectancy in the past 200 years thanks to major advances in public health, but recently the momentum has stalled if not reversed.[^1] Children are taught from a young age to have a healthy diet, exercise regularly, and keep up personal hygiene to stay healthy and therefore live longer. However, macro-factors clearly play a role in how healthy ones life is. Health policy and its relationship with these macro-factors greatly impacts the health of individuals as this most recent pandemic has shown.
+Humans have experienced a tremendous rise in life expectancy in the past 200 years thanks to major advances in public health, but recently the momentum has stalled if not reversed.[^1] Children are taught from a young age to have a healthy diet, exercise regularly, and keep up personal hygiene to stay healthy and thus live longer. However, we want to give advice to entire countries on how to stay healthy. Countries cannot collectively have good hygiene or healthy,diverse diets, so we rely on aggregate macro-factors to predict longevity.
 
-[^1]: https://www.health.harvard.edu/blog/why-life-expectancy-in-the-us-is-falling-202210202835#:\~:text=A%20dramatic%20fall%20in%20life,just%20over%2076%2C%20in%202021.
+[^1]: [Why life expectancy in the US is falling](https://www.health.harvard.edu/blog/why-life-expectancy-in-the-us-is-falling-202210202835#:~:text=A%20dramatic%20fall%20in%20life,just%20over%2076%2C%20in%202021.)
 
-This research project aims to investigate the relationship between macro-factors and life expectancy for a developing and developed countries alike. Experts in public policy and public health are our intended audience as we attempt to give them further evidence on what should be prioritized in the the struggle to keep their citizens healthy. Our research questions are the following:
+This research project aims to investigate the relationship between these macro-factors and life expectancy for developing and developed countries alike. Experts in public policy and public health are our intended audience as we attempt to give them further evidence on what should be prioritized in the the struggle to keep their citizens healthy. Our research questions are the following:
 
 \(1\) *Given a country is developing, what can they do to increase their Life Expectancy?* This question hopes to guide methods for public policy and health experts in developing countries. Generally, developing countries have a lower life expectancy, so what does the data say about what is the most important?
 
 \(2\) *For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?* Developed countries have had the advantage of modern medicine for quite some time, so this question investigates if incremental increases in life expectancy are "worth" the increase in global health expenditure. Should countries focus on research in finding a "miracle" vaccine, or is there still work to be done for cheaper issues like vaccination and schooling.
 
-Similar to how each person gets individual treatment from their primary care physician on their health, we think it is important to divide the research into the categories outlined above so the findings can be more specific and beneficial for nations who fall into those categories. We've also split up our predictors in a likewise fashion. We categorized "Control" variables as features that public policy and health experts can somewhat control. We then categorized "Nuisance" variables as those which governments have little control over such as Population, BMI, and GDP.
+Similar to how each person gets individual treatment from their primary care physician on their health, we think it is important to divide the research into the categories outlined above so the findings can be more specific and beneficial for nations who fall into those categories. We've also split up our predictors in a likewise fashion. We've categorized "Control" variables as features that public policy and health experts can somewhat control. We then categorized "Nuisance" variables as those which governments have little control over such as Population, BMI, and GDP.
 
 Our first research question hopes to tackle the issue of inequality in life expectancy based off where one was born. Developing countries must increase their life expectancy so to match that of other developed countries. The economic benefit of a healthy, long-living country is clear and thus important to understand how to cultivate. The second one hopes to answer an important question of the utility of investing in public health measures. In other words, is there some law of nature that limits how old one can get? Can we find if there is some limit through data analysis? How beneficial is it to increase health expenditure, and instead should governments invest in cutting-edge research to find miracle cures?
 
@@ -111,7 +111,7 @@ life |>
   slice(1:5)
 ```
 
-The data is mostly complete, but certain features are missing values. The missing data will have an impact on our modeling and interpretation which is something to consider for future work. For the time being, we will split up our missing values into two categories: (1) Missing values for entire countries and (2) Missing values for time ranges within a certain country. In regards to the first type of na value, we are left with little options. Many types of models will throw errors if there is missing data, so when fitting models that depend on predictors with missing data, we will throw away observations where missing data is present. In the other case, we propose using the mean of the other samples in that country to fill in the data. For instance, if Algeria has data on its alcohol consumption for all years except 2006, we assume that we should estimate 2006 using the mean. We continue with this methodology.
+The data is mostly complete, but certain features have missing values. The missing data will have an impact on our modeling and interpretation which is something to consider for future work. For the time being, we will split up our missing values into two categories: (1) Missing values for entire countries and (2) Missing values for time ranges within a certain country. In regards to the first type of null value, we are left with little options. Many types of models will throw errors if there is missing data, so when fitting models that depend on predictors with missing data, we will throw away observations where missing data is present. In the other case, we propose using the mean of the other samples in that country to fill in the data. For instance, if Algeria has data on its alcohol consumption for all years except 2006, we assume that we should estimate 2006 using the mean. We continue with this methodology.
 
 ```{r}
 percent_na <- 1-(nrow(na.omit(life))/nrow(life))
@@ -138,8 +138,8 @@ life |>
   filter(Year == 2015) |> 
   dplyr::select(Country,life_exp) |> 
   arrange(desc(life_exp)) |> 
-  slice(1:10) |> 
-  kable(col.names = c("Country", "Life Expectancy"), caption = "Life Expectancy of the Top 10 Countries")
+  slice(1:5) |> 
+  kable(col.names = c("Country", "Life Expectancy"), caption = "Life Expectancy of the Top 5 Countries")
 ```
 
 ```{r}
@@ -151,7 +151,7 @@ indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_
 ```{r}
 life %>% 
   filter(Year == 2015) %>% 
-  ggplot(aes(x = GDP, y = life_exp, color = Status)) + 
+  ggplot(aes(x = Alcohol, y = life_exp, color = Status)) + 
   geom_point()
 ```
 
@@ -194,7 +194,7 @@ ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
 (p1 + p2)/p3
 ```
 
-Generally countries increased life expectancy, especially in Sub-Saharan Africa. Which countries experienced a decrease in life expectancy.
+Generally countries increased life expectancy, especially in Sub-Saharan Africa. Many of the developed countries experienced little increase in life expectancy.
 
 ```{r}
 deltaLifeExp %>% filter(delta_Life_Exp < 0) %>% 
@@ -202,7 +202,7 @@ deltaLifeExp %>% filter(delta_Life_Exp < 0) %>%
   rename("Change in Life Expectancy" = delta_Life_Exp) %>% kable()
 ```
 
-From 2000-2015, the nations that experienced a decrease in life expectancy are Syria, St. Vincent and the Grenandines, Libya, Paraguay, Yemen, Romania, Iraq, Estonia, and Grenada. All of these nations except for Romania are developing.
+From 2000-2015, the nations that experienced a decrease in life expectancy are Syria, St. Vincent and the Grenandines, Libya, Paraguay, Yemen, Romania, Iraq, Estonia, and Grenada. All of these nations except for Romania are developing. For countries that experienced drastic life changes, major events outside of the scope of health policy are to blame. For instance, Yemen experienced drought and Famine. Many other countries have experienced political turmoil and revolutions. We believe it is then useless to model for these specific outliers and thus don't make them a focus in the research.
 
 ```{r}
 negativeLife <- deltaLifeExp |> 
@@ -289,7 +289,7 @@ lmTable1
 
 ### Find a Sparse Model
 
-We believe a priori that life expectancy is a function of only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization. In fitting the lasso model, we see that `Schooling`, `Diphteria`, and `Polio` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. Rates of vaccination for Diphteria and Polia are also deemed important predictors.
+We believe a priori that life expectancy is a function of only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization. In fitting the lasso model, we see that `Schooling`, `Diphteria`, and `Polio` , `Alcohol`, and `Total Expenditure` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. It is interesting that Total expenditure has an inverse relationship with life expectancy and is an important predictor.
 
 ```{r}
 wflow_control_developed_lasso <- workflow() %>%
@@ -344,7 +344,7 @@ plot(ggeffects::ggpredict(undeveloped_Gam$fit$fit), facets = TRUE) +
   labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for High Life Expectancy Nations")
 ```
 
-These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that average schooling is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model.
+These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that average schooling is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model. Increasing government expenditure does not simply increase life expectancy, so it is important to spend money wisely on the factors we listed out, instead of spending freely on anything.
 
 ```{r}
 delta_cont <- life |> 
