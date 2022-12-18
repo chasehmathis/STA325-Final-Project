@@ -8,6 +8,11 @@ execute:
 editor: visual
 ---
 
+## Introduction
+
+-   We aim to investigate the relationship between controllable macro-factors and life expectancy for developing nations and those who already have high life expectancy.
+-   Our audience are global health experts as well as government officials and policymakers and aim to give them suggestions based on our finds on what should be prioritized in keeping their citizens healthy and increasing life expectancy
+
 ```{r}
 #| label: data-libraries
 
@@ -74,10 +79,7 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 
 ```
 
-## Introduction
-
--   We aim to investigate the relationship between controllable macro-factors and life expectancy for developing nations and those who already have high life expectancy.
--   Our audience are global health experts as well as government officials and policymakers and aim to give them suggestions based on our finds on what should be prioritized in keeping their citizens healthy and increasing life expectancy
+## 
 
 ## Relevance
 
@@ -117,6 +119,25 @@ life <- life |>
 
 percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
+
+## Limitations
+
+::: columns
+::: {.column width="60%"}
+-   The data has null values which throw errors when we fit models
+
+-   We attempt to decrease the proportion of null values by taking the mean
+
+-   In the end, we decrease the proportion from `r percent_na` to `r percent_na_after`
+:::
+
+::: {.column width="40%"}
+```{r}
+#| fig-align: right
+na_table
+```
+:::
+:::
 
 ## Methodology
 
