@@ -347,7 +347,7 @@ undeveloped_Gam <- wflow_controlled_gam |>
   fit(data = training_life)
 
 plot(ggeffects::ggpredict(undeveloped_Gam$fit$fit), facets = TRUE) + 
-  labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for High Life Expectancy Nations")
+  labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for Developing Nations Life Expectancy")
 ```
 
 These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that average schooling is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model. Increasing government expenditure does not simply increase life expectancy, so it is important to spend money wisely on the factors we listed out, instead of spending freely on anything.
