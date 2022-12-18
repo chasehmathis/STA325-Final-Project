@@ -93,7 +93,6 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 
 ::: columns
 ::: {.column width="45%"}
-
 ![](images/questionmark.png){width="750"}
 :::
 
@@ -133,6 +132,20 @@ life <- life |>
   ungroup()
 percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
+
+::: columns
+::: {.column width="60%"}
+-   Data collected from the Global Health Observatory (GHO) under World Health Organization (WHO) and United Nations website via Kaggle
+-   22 variables:
+-   Response: `life_exp`
+-   Controllable features: `Alcohol`, `pct_expend`, `hep_b`, `Polio`, `tot_expend`, `Diphtheria`, `Schooling`
+-   Analyze how governments can alter controllable variables to increase life expectancy
+:::
+
+::: {.column width="40%"}
+![](images/who.png)
+:::
+:::
 
 ## Limitations of Data
 
