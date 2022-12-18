@@ -15,8 +15,6 @@ editor: visual
 
 ```{r}
 #| label: data-libraries
-
-
 library(tidyverse)
 library(tidymodels)
 library(knitr)
@@ -30,7 +28,6 @@ library(mgcv)
 library(ggeffects)
 #install.packages("rpart.plot")
 #install.packages("fuzzyjoin")
-
 life <- read_csv(here::here("data/life_exp.csv"))
 ggplot2::theme_set(ggplot2::theme_bw())
 worldData <- map_data("world")
@@ -68,7 +65,6 @@ worldData <- worldData |>
 
 ```{r}
 #| label: rename
-
 life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Developed"))) %>%
   rename(life_exp = "Life expectancy", adult_mortality = "Adult Mortality", 
         infant_mortality = "infant deaths", pct_expend = "percentage expenditure", 
@@ -76,10 +72,23 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
         tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
         thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
         income_comp = "Income composition of resources") 
-
 ```
 
 ## Relevance
+
+::: columns
+::: {.column width="40%"}
+-   The data has null values which throw errors when we fit models
+
+-   We attempt to decrease the proportion of null values by taking the mean
+
+-   In the end, we decrease the proportion
+:::
+
+::: {.column width="60%"}
+![](images/fauci.jpeg)
+:::
+:::
 
 ## Research Questions
 
@@ -114,28 +123,10 @@ life <- life |>
         income_comp = replace_na(income_comp, mean(income_comp, na.rm = TRUE)),
         Schooling = replace_na(Schooling, mean(Schooling, na.rm = TRUE))) |> 
   ungroup()
-
 percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
 
-::: columns
-::: {.column width="60%"}
--   Data collected from the Global Health Observatory (GHO) and United Nations website via Kaggle
-
--   22 variables
-
--   \`
-:::
-
-::: {.column width="40%"}
-```{r}
-#| fig-align: right
-na_table
-```
-:::
-:::
-
-## Limitations
+## Limitations of Data
 
 ::: columns
 ::: {.column width="60%"}
@@ -143,7 +134,7 @@ na_table
 
 -   We attempt to decrease the proportion of null values by taking the mean
 
--   In the end, we decrease the proportion from `r percent_na` to `r percent_na_after`
+-   In the end, we decrease the proportion from `r round(percent_na,3)` to `r round(percent_na_after,3)`
 :::
 
 ::: {.column width="40%"}
