@@ -79,8 +79,6 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 
 ```
 
-## 
-
 ## Relevance
 
 ## Research Questions
