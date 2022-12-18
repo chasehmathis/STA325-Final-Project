@@ -5,9 +5,9 @@
 <script src="presentation_files/libs/quarto-html/popper.min.js"></script>
 <script src="presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet">
+<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.563">
+  <meta name="generator" content="quarto-1.0.36">
 
   <meta name="author" content="Chase Mathis, Dillan Sant">
   <title>Investigating Controllable Factors of Life Expectancy</title>
@@ -314,7 +314,7 @@
     }
   </style>
 </head>
-<body>
+<body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
@@ -448,6 +448,91 @@
 </section>
 <section id="life-expectancy-in-healthy-nations" class="slide level2">
 <h2>Life Expectancy in “Healthy” Nations</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Analyze a subset of nations considered having high life expectancy</li>
+<li>Determine significance of controllable variables</li>
+<li>Decide if it is economically worthwhile to invest further in increase life expectancy</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<div class="cell" data-layout-align="right">
+<div class="cell-output-display">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Country</th>
+<th style="text-align: right;">life_exp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Slovenia</td>
+<td style="text-align: right;">88.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Denmark</td>
+<td style="text-align: right;">86.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chile</td>
+<td style="text-align: right;">85.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cyprus</td>
+<td style="text-align: right;">85.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Japan</td>
+<td style="text-align: right;">83.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Switzerland</td>
+<td style="text-align: right;">83.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Singapore</td>
+<td style="text-align: right;">83.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Spain</td>
+<td style="text-align: right;">82.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="lasso-to-select-features" class="slide level2">
+<h2>Lasso to Select Features</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Use lasso regression to select important controllable variables</li>
+<li>Analyze why predictors may have been selected and their corresponding <span class="math inline">\(\hat\beta\)</span> values</li>
+<li>Compare results of high life expectancy nations to all other nations</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<p>Lasso fit for high life expectancy nations <img data-src="images/lasso.png" width="304"> Lasso fit for other nations<img data-src="images/lasso_rest.png" width="304"></p>
+</div>
+</div>
 </section>
 <section id="results" class="slide level2">
 <h2>Results</h2>
@@ -713,6 +798,24 @@
 
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
