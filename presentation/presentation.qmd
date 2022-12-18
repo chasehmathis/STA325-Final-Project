@@ -82,25 +82,33 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 ## Relevance
 
 ::: columns
-::: {.column width="40%"}
--   The data has null values which throw errors when we fit models
-
--   We attempt to decrease the proportion of null values by taking the mean
-
--   In the end, we decrease the proportion
+::: {.column width="55%"}
+-   Public Policy and Health Policy have almost intertwined in the past few years with the pandemic
+-   Data-driven approaches are not only useful, but necessary
+-   Life expectancy has decreased in recent years
+-   Help health experts understand factors that affect life expectancy
 :::
 
-::: {.column width="60%"}
+::: {.column width="45%"}
 ![](images/fauci.jpeg)
 :::
 :::
 
 ## Research Questions
 
+::: columns
+::: {.column width="45%"}
+
+![](images/questionmark.png){width="750"}
+:::
+
+::: {.column width="55%"}
 -   The research is guided by two research questions:
+
     -   \(1\) *Given a country is developing, what can they do to increase their Life Expectancy?*
     -   \(2\) *For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?*
--   Answering these questions gives us the flexibility to suggest tailored advice for nations depending on their health status.
+:::
+:::
 
 ## Data
 
