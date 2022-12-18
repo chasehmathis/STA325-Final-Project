@@ -266,11 +266,7 @@ In this section, we will apply interpretable statistical models to explore the r
 
 ### Linear Regression
 
-We first fit a linear regression model predicting life expectancy from our control variables we outline in our data dictionary. As one can see from the output, hepatitis B vaccination rate and total expenditure are not statistically significant predictors, while the rest are.
-
-At first glance, we notice a few interesting insights. For one, increasing Schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss seems to have the largest impact. Second, Alcohol is naturally inversely related with life expectancy, while alcohol and a countries GDP may be related to one another.
-
-A shortcoming to Linear Regression in this setting is that it requires many assumptions, and some of these the data does not meet. For instance, linear regression assumes that the data is *independent*. However, because the data was sampled every year, each observation is dependent on the the one before it. This is a shortcoming in the model, and provides inspiration to future research in ways we can mitigate the dependency between observations, perhaps by a bootstrapping method.
+We first fit a simple linear regression model predicting life expectancy from our control variables we outline in our data dictionary. As one can see from the output, hepatitis B vaccination rate and total expenditure are not statistically significant predictors, while the rest are.
 
 ```{r}
 #| label: data-pre-processing
@@ -308,9 +304,13 @@ lmTable1 <- tidy(control_developed_fit) |>
 lmTable1
 ```
 
+At first glance, we notice a few interesting insights. For one, increasing schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss under the lens of life expectancy, seems to have the largest impact. Second, alcohol is naturally inversely related with life expectancy, while alcohol and a country's GDP may be related to one another, as stated earlier during EDA.
+
+A shortcoming to linear regression in this setting is that it requires many assumptions, and some of these the data does not meet. For instance, linear regression assumes that the data is *independent*. However, because the data was sampled every year, each observation is dependent on the the one before it. This is a shortcoming in the model, and provides inspiration to future research in ways we can mitigate the dependency between observations, perhaps by a bootstrapping method.
+
 ### Find a Sparse Model
 
-We believe a priori that life expectancy is a function of only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization. In fitting the lasso model, we see that `Schooling`, `Diphteria`, and `Polio` , `Alcohol`, and `Total Expenditure` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. It is interesting that Total expenditure has an inverse relationship with life expectancy and is an important predictor.
+We believe a priori that life expectancy is a function of only a few of these variables given that there is such a wide variance in life expectancy that depend on factors not included in this dataset. Thus, with this belief, finding a sparse model is a natural step. Lasso regression will help us select important variables, by regularization.
 
 ```{r}
 wflow_control_developed_lasso <- workflow() %>%
@@ -330,9 +330,11 @@ lmTable1 <- tidy(control_developed_fit_lasso) |>
 lmTable1
 ```
 
+In fitting the lasso model, we see that `Schooling`, `Diphteria`, `Polio`, `Alcohol`, and `Total Expenditure` are the variables selected. Schooling we saw had the greatest impact in our linear regression model above, which further hints at it being an important predictor. It is interesting that total expenditure on healthcare (as a percentage of total government expenditure) has an inverse relationship with life expectancy and is an important predictor.
+
 ### Interaction Effects Through Trees?
 
-In fitting the two regression models above, we fail to see any interaction effects. Using a tree based model, we can fit a complex, nonlinear model to predict life expectancy, yet also maintain its interpretability. In doing so, we see again the importance of Schooling in increasing life expectancy. Schooling is the first split implying the greatest importance of the variables. In addition, following the tree we see the same trend that we did with increases in Schooling related to increases in life expectancy. In addition, schooling is the most prevalent decision the tree makes. Following the left sub-tree, interactions between schooling and other variables emerge. This is interesting given that the right sub-tree has much less interactions, and instead attempts to predict based off more Schooling decisions.
+In fitting the two regression models above, we fail to see any interaction effects. Using a tree based model, we can fit a complex, nonlinear model to predict life expectancy, yet also maintain its interpretability.
 
 ```{r}
 wflow_controlled_tree <- workflow() %>%
@@ -347,9 +349,11 @@ control_developed_fit_tree <- control_developed_fit_tree$fit$fit$fit
 rpart.plot(control_developed_fit_tree,roundint = FALSE)
 ```
 
+We see again the importance of schooling in increasing life expectancy. Schooling is the first split implying the greatest importance of the variables. In addition, following the tree we see the same trend that we did with increases in years of educated related to increases in life expectancy. In addition, schooling is the most prevalent decision the tree makes. Following the left sub-tree, interactions between `Schooling` and other variables emerge. This is interesting given that the right sub-tree has much less interactions, and instead attempts to predict based off more schooling decisions.
+
 ### GAMS
 
-As promised, we fit a Generalized Additive Model to find nonlinear affects for each of our controllable variables. Schooling has been our most important variable this far, so we begin with analyzing the schooling variable. From the plot shown below, we see that Schooling has a quadratic shape in that increase schooling from zero to five actually *decreases* life expectancy, but once schooling changes from five onward, life expectancy shoots up. Alcohol has a clear negative relationship that seems generally linear and percent expenditure also has a slight positive relationship with life expectancy.
+As promised, we fit a Generalized Additive Model to find nonlinear affects for each of our controllable variables. Schooling has been our most important variable this far, so we begin with analyzing the schooling variable. From the plot shown below, we see that Schooling has a quadratic shape in that increasing years of education from zero to five actually *decreases* life expectancy, but once schooling changes from five onward, life expectancy drastically shoots up. Alcohol has a clear negative relationship that seems generally linear, and percent expenditure also has a slight positive relationship with life expectancy.
 
 ```{r}
 gam_formula <- as.formula(life_exp ~ s(Alcohol) + s(pct_expend) + s(hep_b) + s(Polio) + s(tot_expend) + s(Diphtheria) + s(Schooling))
@@ -365,7 +369,7 @@ plot(ggeffects::ggpredict(undeveloped_Gam$fit$fit), facets = TRUE) +
   labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for Developing Nations Life Expectancy")
 ```
 
-These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that average schooling is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model. Increasing government expenditure does not simply increase life expectancy, so it is important to spend money wisely on the factors we listed out, instead of spending freely on anything.
+These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that the average number of years of education is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model. Increasing government expenditure does not simply increase life expectancy, so it is important for governments of these nations to spend money wisely on the factors we listed out, instead of spending freely on anything.
 
 ```{r}
 delta_cont <- life |> 
