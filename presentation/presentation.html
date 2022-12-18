@@ -5,9 +5,9 @@
 <script src="presentation_files/libs/quarto-html/popper.min.js"></script>
 <script src="presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet">
+<link href="presentation_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="presentation_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-0.9.563">
+  <meta name="generator" content="quarto-1.0.36">
 
   <meta name="author" content="Chase Mathis, Dillan Sant">
   <title>Investigating Controllable Factors of Life Expectancy</title>
@@ -314,7 +314,7 @@
     }
   </style>
 </head>
-<body>
+<body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
@@ -371,6 +371,19 @@
 </div>
 <div class="cell">
 
+</div>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li>Data collected from the Global Health Observatory (GHO) under World Health Organization (WHO) and United Nations website via Kaggle</li>
+<li>22 variables:</li>
+<li>Response: <code>life_exp</code></li>
+<li>Controllable features: <code>Alcohol</code>, <code>pct_expend</code>, <code>hep_b</code>, <code>Polio</code>, <code>tot_expend</code>, <code>Diphtheria</code>, <code>Schooling</code></li>
+<li>Analyze how governments can alter controllable variables to increase life expectancy</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/who.png"></p>
+</div>
 </div>
 </section>
 <section id="limitations-of-data" class="slide level2">
@@ -694,6 +707,24 @@
 
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
