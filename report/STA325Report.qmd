@@ -58,7 +58,7 @@ worldData <- map_data("world")
 
 ## Data
 
-The Global Health Observatory (GHO) collected the data and has made it public in their data repository for global health analysis. The features of this data contain global health data for specific countries collected by GHO and WHO as well as economic data collected from the United Nations' website. The data has 21 features which are outlined in the data dictionary in the appendix. Each observation in our data is a country and the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forests or bagging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
+The Global Health Observatory (GHO) under the World Health Organization (WHO) collected the data and has made it public in their data repository for global health analysis. The features of this data contain global health data for specific countries collected by GHO and WHO as well as economic data collected from the United Nations' website. The data has 21 features which are outlined in the data dictionary in the appendix. Each observation in our data represents a country, its macro-factor summary statistics, and the year. As the features are summary statistics, we are predicting averages from averages. We will *not* use black-box models such as random forests or bagging to get high predictive accuracy, as this question investigates aggregate relationships. We will therefore be using statistical modeling techniques such as linear regression, regularized regression, trees, and GAMS, as we aim to quantify the magnitude and type of relationships between life expectancy and each of our features.
 
 ```{r}
 ## fixing for graph plots
@@ -113,7 +113,7 @@ life |>
   kable(col.names = c("Term", "Percent Missing"), caption = c("Variables with Missing Values"), digits = 2)
 ```
 
-The data is mostly complete, but certain features have missing values. The missing data will have an impact on our modeling and interpretation which is something to consider for future work. For the time being, we will split up our missing values into two categories: (1) Missing values for entire countries and (2) Missing values for time ranges within a certain country. In regards to the first type of null value, we are left with little options. Many types of models will throw errors if there is missing data, so when fitting models that depend on predictors with missing data, we will throw away observations where missing data is present. In the other case, we propose using the mean of the other samples in that country to fill in the data. For instance, if Algeria has data on its alcohol consumption for all years except 2006, we assume that we should estimate 2006 using the mean. We continue with this methodology.
+The data is mostly complete, but certain features have missing values. The missing data will have an impact on our modeling and interpretation which is something to consider for future work. For the time being, we will split up our missing values into two categories: (1) Missing values for entire countries and (2) Missing values for time ranges within a certain country. In regards to the first type of null value, we are left with little options. Many types of models will throw errors if there is missing data, so when fitting models that depend on predictors with missing data, we will throw away observations where missing data is present. In the other case, we propose using the mean of the other samples in that country to fill in the data. For instance, if Algeria has data on its alcohol consumption for all years except 2006, we assume that we should estimate 2006 alcohol consumption using the mean of Algeria's other years' alcohol consumption measures. We continue with this methodology.
 
 ```{r}
 percent_na <- 1-(nrow(na.omit(life))/nrow(life))
@@ -202,14 +202,14 @@ plot2 <- life %>%
   filter(Year == 2015) %>%
   ggplot(aes(x = GDP, y = Status)) + 
   geom_boxplot() + 
-  labs(title = "Relationship between Countries' Developmental Status and GDP per capita", x = "GDP per Capita (USD)")
+  labs(title = "Relationship between Countries' Development Status and GDP per capita", x = "GDP per Capita (USD)")
 ```
 
 ```{r}
 plot1/plot2
 ```
 
-Looking at this plot, it is clear that developed countries consume more alcohol than developing countries, on average. Logically, this makes sense since developed countries generally have higher a higher GDP than developing nations, thus they are better off, and consumers have more economic freedom to purchase and consume alcohol. We will analyze this relationship concerning developed, higher life expectancy nations during our modeling, as perhaps alcohol could have detrimental effects on developed countries' life expectancy.
+Looking at this plot, it is clear that developed countries consume more alcohol than developing countries, on average. Logically, this makes sense since developed countries generally have a higher GDP than developing nations, thus they are better off, and consumers have more economic freedom to purchase and consume alcohol. We will analyze this relationship concerning developed, higher life expectancy nations during our modeling, as perhaps alcohol could have detrimental effects on developed countries' life expectancy.
 
 ```{r}
 p1 + p2
@@ -223,7 +223,7 @@ deltaLifeExp %>% filter(delta_Life_Exp < 0) %>%
   rename("Change in Life Expectancy" = delta_Life_Exp) %>% kable()
 ```
 
-From 2000-2015, the few nations that experienced a decrease in life expectancy are Syria, St. Vincent and the Grenadines, Libya, Paraguay, Yemen, Romania, Iraq, Estonia, and Grenada. All of these nations except for Romania are developing. For countries that experienced drastic life expectancy changes, major events outside of the scope of health policy are to blame. For instance, Yemen experienced drought and famine Many other countries have experienced political turmoil and revolutions. We believe it is then useless to model for these specific outliers and thus don't make them a focus in the research.
+From 2000-2015, the few nations that experienced a decrease in life expectancy are Syria, St. Vincent and the Grenadines, Libya, Paraguay, Yemen, Romania, Iraq, Estonia, and Grenada. All of these nations except for Romania are developing. For countries that experienced drastic life expectancy changes, major events outside of the scope of health policy are to blame. For instance, Yemen experienced drought and famine. Many other countries have experienced political turmoil and revolutions. We believe it is then useless to model for these specific outliers and thus don't make them a focus in the research.
 
 ```{r}
 negativeLife <- deltaLifeExp |> 
