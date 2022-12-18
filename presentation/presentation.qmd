@@ -15,8 +15,6 @@ editor: visual
 
 ```{r}
 #| label: data-libraries
-
-
 library(tidyverse)
 library(tidymodels)
 library(knitr)
@@ -30,7 +28,6 @@ library(mgcv)
 library(ggeffects)
 #install.packages("rpart.plot")
 #install.packages("fuzzyjoin")
-
 life <- read_csv(here::here("data/life_exp.csv"))
 ggplot2::theme_set(ggplot2::theme_bw())
 worldData <- map_data("world")
@@ -68,7 +65,6 @@ worldData <- worldData |>
 
 ```{r}
 #| label: rename
-
 life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Developed"))) %>%
   rename(life_exp = "Life expectancy", adult_mortality = "Adult Mortality", 
         infant_mortality = "infant deaths", pct_expend = "percentage expenditure", 
@@ -76,7 +72,6 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
         tot_expend = "Total expenditure", hiv_aids = "HIV/AIDS",
         thinness_adole = "thinness  1-19 years", thinness_infant = "thinness 5-9 years", 
         income_comp = "Income composition of resources") 
-
 ```
 
 ## Relevance
@@ -136,7 +131,6 @@ life <- life |>
         income_comp = replace_na(income_comp, mean(income_comp, na.rm = TRUE)),
         Schooling = replace_na(Schooling, mean(Schooling, na.rm = TRUE))) |> 
   ungroup()
-
 percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
 
