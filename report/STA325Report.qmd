@@ -46,6 +46,8 @@ library(MASS)
 library(fuzzyjoin)
 library(rpart.plot)
 library(glmnet)
+library(mgcv)
+library(ggeffects)
 #install.packages("rpart.plot")
 #install.packages("fuzzyjoin")
 
@@ -132,17 +134,6 @@ After filling in na values with the mean, we are able to decrease the percent of
 ## Exploratory Data Analysis
 
 ```{r}
-#| label: pre-processing
-
-life <- na.omit(life)
-set.seed(123)
-split <- initial_split(life)
-training_life <- training(split)
-testing_life <- testing(split)
-
-```
-
-```{r}
 life |> 
   filter(Year == 2015) |> 
   dplyr::select(Country,life_exp) |> 
@@ -216,6 +207,17 @@ From 2000-2015, the nations that experienced a decrease in life expectancy are S
 ```{r}
 negativeLife <- deltaLifeExp |> 
   filter(delta_Life_Exp < 0)
+```
+
+```{r}
+#| label: pre-processing
+
+life <- na.omit(life)
+set.seed(123)
+split <- initial_split(life)
+training_life <- training(split)
+testing_life <- testing(split)
+
 ```
 
 ## Research Question 1: Given a country is developing, what can they do to increase their Life Expectancy?
@@ -339,7 +341,7 @@ delta_cont <- life |>
 
 According to the Centers for Disease Control, the average life expectancy globally is roughly 75 years for women and 70 years for men, as of 2022. Since our data only contains life expectancy measures up to 2015, we will classify the top quartile of 2015 life expectancies as "high life expectancy". Subsequently, 34 countries make up our subset of nations we will consider as having high life expectancy in 2015. Note that the United States is not included in this subset. Interestingly, 19 of these 34 nations are classified as developing nations. This result is most likely due to the fact that a vast majority of the countries are classified as developing, so even when we take a subset of nations with the highest life expectancy, we still expect a lot of these nations to be developing. As with our first research question, we will fit models with the controllable variable as predictors on our 34 nations' data from 2000-2015 to determine just how cost efficient (or inefficient) it would be for a high life expectancy nation to further improve life expectancy. We will also do the same to the remaining nations to compare results.
 
-```{r}
+```{r, message = FALSE}
 high_life_exp <- life %>% filter(Year == 2015) %>% summarize(Q3 = quantile(life_exp, 0.75)) %>% pull()
 hle_nations <- life %>% filter(Year == 2015) %>% filter(life_exp >= high_life_exp) %>% dplyr::select(Country)
 hle_life <- left_join(hle_nations, life)
@@ -424,6 +426,13 @@ rpart.plot(tree_hle, roundint = FALSE)
 ```
 
 ```{r}
+mean_school <- hle_train %>% summarize(mean = mean(Schooling))
+```
+
+
+This decision tree's results mostly follows our previous conclusions. The first decision, thus the most important predictor is again `Schooling`. However, it is worth noting that this primary decision is made off years of education being greater or less than 16 years. The mean years of schooling for high life expectancy nations is only `r round(mean_school, 2)` years. The fact that this primary decision is being made at a value of `Schooling` that is well above the mean is concerning, indicating that it is expected to take significant increase in education to increase life expectancy further.
+
+```{r}
 wflow_tree_rest <- workflow() %>%
  add_model(tree_spec) %>%
  add_recipe(life_control_rest) 
@@ -433,9 +442,30 @@ tree_rest <- tree_rest$fit$fit$fit
 rpart.plot(tree_rest, roundint = FALSE)
 ```
 
-**look into fitting GAM**
+Again, this decision tree for non-high life expectancy nations indicates that `Schooling` is the most important predictor of life expectancy.
 
-### GAM
+**If space needed, move this tree to appendix**
+
+### Generalized Additive Model to Analyze Nonlinear Relationships
+
+The results from lasso and decision trees indicate that increases in years of education lead to diminishing increases in life expectancy, and we considered that it may not be worth the further investment into education for nations with already high life expectancy. Also, both models' results indicate that there could possibly be nonlinear relationships between the predictor variables and the response of life expectancy. So, we decided to fit a generalized additive model (GAM) on the four selected significant predictors chosen by lasso earlier, as to not overcomplicate our mdoel. We trust the feature selection of the lasso model, and thus fit a GAM predicting life expectancy from `Schooling`, `Alcohol`, `pct_expend`, and `Diphtheria`. 
+
+```{r}
+gam_hle_fit <- gam(life_exp ~ s(Schooling) + s(Alcohol) + s(pct_expend) + s(Diphtheria), data = hle_train)
+plot(ggeffects::ggpredict(gam_hle_fit), facets = TRUE) + 
+  labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit")
+```
+
+```{r}
+gam_yhat <- predict(gam_hle_fit, newdata = hle_test)
+lasso_yhat <- predict(lasso_hle_fit, new_data = hle_test)
+mse_gam <- sum((gam_yhat - hle_test$life_exp)^2/nrow(hle_test))
+mse_lasso <- sum((lasso_yhat - hle_test$life_exp)^2/nrow(hle_test))
+model_mets <- tribble(~ModelType, ~MSE, 
+                      "Lasso", mse_lasso,
+                      "Generalized Additive Model", mse_gam)
+model_mets %>% kable(digits = 2)
+```
 
 ## Notes
 
