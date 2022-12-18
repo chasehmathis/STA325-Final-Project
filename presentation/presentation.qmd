@@ -1,5 +1,5 @@
 ---
-title: "STA325 Case Study"
+title: "Investigating Controllable Factors of Life Expectancy"
 author: "Chase Mathis, Dillan Sant"
 format: revealjs
 execute: 
@@ -9,6 +9,16 @@ editor: visual
 ---
 
 ## Introduction
+
+- We aim to investigate the relationship between controllable macro-factors and life expectancy for developing nations and those who already have high life expectancy. 
+- Our audience are global health experts as well as government officials and policymakers and aim to give them suggestions based on our finds on what should be prioritized in keeping their citizens healthy and increasing life expectancy
+
+## Research Questions
+
+- The research is guided by two research questions:
+  - \(1\) *Given a country is developing, what can they do to increase their Life Expectancy?*
+  - \(2\) *For countries that already have a high life expectancy, is it economically beneficial to attempt to marginally increase life expectancy?*
+- Answering these questions gives us the flexibility to suggest tailored advice for nations depending on their health status.
 
 ## Data
 
