@@ -486,47 +486,11 @@ In this study, we investigated the relationship between life expectancy and nume
 
 **Maybe add some more about research question 1, really want to hit it home with specific real world interpretations**
 
-For nations that already have a high life expectancy, schooling also has the strongest positive relationship to life expectancy, but this relationship is a lot weaker than that for nations with non-high life expectancy. For these well off nations, an increase of one year of education is expected to have a lot lesser effect on life expectancy than other nations. As stated earlier, the average number of years of schooling of these nations is roughly 15 years of education, corresponding to a little more than a high school education. In Australia, a nation with high life expectancy, an average year of at an  undergraduate university can be up to \$45,000. From a global health perspective, it would be ridiculously costly for the government of Australia to spend billions of dollars on public, collegiate education with the sole purpose of increasing life expectancy, especially since the expected corresponding increase in life expectancy is marginal. 
+For nations that already have a high life expectancy, schooling also has the strongest positive relationship to life expectancy, but this relationship is a lot weaker than that for nations with non-high life expectancy. For these well off nations, an increase of one year of education is expected to have a lot lesser effect on life expectancy than other nations. As stated earlier, the average number of years of schooling of these nations is roughly 15 years of education, corresponding to a little more than a high school education. In Australia, a nation with high life expectancy, an average year of at an  undergraduate university can be up to \$45,000, according to Study Australia. From a global health perspective, it would be ridiculously costly for the government of Australia to spend billions of dollars on public, collegiate education with the sole purpose of increasing life expectancy, especially since the expected corresponding increase in life expectancy is marginal. 
 
 We found that these nations that are typically well-off also have a detrimental relationship with alcohol. In fact, our modeling suggests that the negative effect of alcohol consumption outweighs any positive effect of other factors on life expectancy. Thus, we also suggest that the government of these well-off nations shift funding towards government programs related to public alcohol and other drugs education and guidance, safety, and rehabilitation. 
 
 Finally, our research demonstrate that expenditure on healthcare shows a slight positive relationship with life expectancy. It would not be optimal for these high life expectancy nations to heavily shift their expenditure towards healthcare, rather these nations' global health innovation could be driven by slow and steady increase in investments in healthcare, immunizations, and global health. Aside from the numbers and expenditure, it is most important that all nations' governments, developing or not, high life expectancy or not, well off or not, recognize the relevance of global health studies and innovation in order to further progress this world's collective society. 
-
-## Notes
-
-### Introduction/EDA
-
--   start with providing scientific context, refer to article
--   shift towards problem, introduce research questions
--   Context and previous research
--   Why is this important? Goal
--   Overview of the rest of the paper. Can do after
--   give detailed description of data (see rubric), which predictors are uncontrollable, controllable, indicators
--   start EDA, show some simple, interpretable plots regarding different predictors, find different relationships among controllable variables
-
-### Modeling
-
--   Start with linear regression
--   check out interaction effects
--   ridge, lasso (for interpretable variable selection)
--   trees
--   stay away from uninterpretable methods like random forests, boosting
-
-### Within Research Questions
-
--   focus on answering research question, using data/modeling merely as support for argument
--   make sure models and its results would be interpretable for global health professionals and governments
--   plot model diagnostics to assess models, make tables of results/predictions of models
--   give suggestions based on results to policy makers (ex. "this nation should put a greater prorportion of their total expenditure into health care to increase life expectancy")
-
-### 
-
-
-
-### Conclusion
-
--   suggest in which factors specific nations should invest their money in based on modeling during both research questions, or, suggest not to increase investment in health care for nations with already high life expectancy
--   reference models, focus on interpretability and policy actions
 
 ## Appendix
 
