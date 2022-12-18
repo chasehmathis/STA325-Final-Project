@@ -139,7 +139,6 @@ percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 -   22 variables:
 -   Response: `life_exp`
 -   Controllable features: `Alcohol`, `pct_expend`, `hep_b`, `Polio`, `tot_expend`, `Diphtheria`, `Schooling`
--   Analyze how governments can alter controllable variables to increase life expectancy
 :::
 
 ::: {.column width="40%"}
@@ -168,7 +167,53 @@ na_table
 
 ## Methodology
 
+::: columns
+::: {.column width="55%"}
+-   We will use only interpretable statistical models such as:
+
+    -   GAMS, Trees, Linear Regression
+
+-   Show the results of the models and the limitations of them
+
+-   Make conclusions on interaction and individual effects of each variable on life expectancy
+:::
+
+::: {.column width="45%"}
+![](images/methodology.png)
+:::
+:::
+
 ## Life Expectancy in Developing Nations
+
+::: columns
+::: {.column width="55%"}
+-   Health officials in developing countries are tasked with difficult jobs
+
+-   A healthy population is vital for developing countries
+
+-   Can we advise health officials to pinpoint important policies that make the biggest difference?
+
+-   To do this, we fit a model using only developing countries' data
+:::
+
+::: {.column width="45%"}
+![](images/developingcountries.jpeg)
+:::
+:::
+
+## Results: Schooling is the [Most]{.underline} Important
+
+::: columns
+::: {.column width="55%"}
+-   Schooling, which is relatively cheap was found to be the most important predictor in increasing a developing nations life expectancy
+
+-   On average an increase of one year of schooling is related to an increase in over two years in life expectancy given the country is developing
+:::
+
+::: {.column width="45%"}
+![](images/schooling.jpeg)
+:::
+:::
 
 ## Life Expectancy in "Healthy" Nations
 
