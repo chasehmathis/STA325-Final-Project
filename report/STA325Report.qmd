@@ -107,8 +107,10 @@ life |>
   summarise(across(everything(), ~ sum(is.na(.)))) |> 
   pivot_longer(everything()) |> 
   arrange(desc(value)) |> 
-  mutate(percent_missing = value/nrow(life)) |> 
-  slice(1:5)
+  mutate(percent_missing =  (100*value/nrow(life))) |> 
+  slice(1:5) |> 
+  dplyr::select(-value) |> 
+  kable(col.names = c("Term", "Percent Missing"), caption = c("Variables with Missing Values"), digits = 2)
 ```
 
 The data is mostly complete, but certain features have missing values. The missing data will have an impact on our modeling and interpretation which is something to consider for future work. For the time being, we will split up our missing values into two categories: (1) Missing values for entire countries and (2) Missing values for time ranges within a certain country. In regards to the first type of null value, we are left with little options. Many types of models will throw errors if there is missing data, so when fitting models that depend on predictors with missing data, we will throw away observations where missing data is present. In the other case, we propose using the mean of the other samples in that country to fill in the data. For instance, if Algeria has data on its alcohol consumption for all years except 2006, we assume that we should estimate 2006 using the mean. We continue with this methodology.
@@ -132,15 +134,10 @@ percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 After filling in null values with the mean, we are able to decrease the percent of na-values from `r 100*round(percent_na,3)`% to `r 100*round(percent_na_after,3)`%. This reduction will help us use more of the data so that we can find better conclusions for policy makers.
 
 ## Exploratory Data Analysis
-
 ```{r}
-life |> 
-  filter(Year == 2015) |> 
-  dplyr::select(Country,life_exp) |> 
-  arrange(desc(life_exp)) |> 
-  slice(1:5) |> 
-  kable(col.names = c("Country", "Life Expectancy"), caption = "Life Expectancy of the Top 5 Countries")
+
 ```
+
 
 ```{r}
 control_vars <- c("Alcohol","pct_expend", "hep_b", "Polio", "tot_expend", "Diphtheria", "Schooling")
@@ -148,12 +145,7 @@ uncontrol_vars <- c("BMI", "GDP", "Population", "thinnes_adole", "thinness_infan
 indicator_vars <- c("under_five_deaths", "life_exp", "adult_mortality", "infant_mortality")
 ```
 
-```{r}
-life %>% 
-  filter(Year == 2015) %>% 
-  ggplot(aes(x = Alcohol, y = life_exp, color = Status)) + 
-  geom_point()
-```
+
 
 ```{r}
 deltaLifeExp <- life |> 
@@ -191,10 +183,23 @@ ggplot(aes(x = long, y = lat, group = group, fill = delta_Life_Exp)) +
 ```
 
 ```{r}
-(p1 + p2)/p3
+p3
+```
+Generally countries increased life expectancy, especially in Sub-Saharan Africa. Many of the developed countries experienced little increase in life expectancy.
+
+```{r}
+life %>% 
+  filter(Year == 2015) %>% 
+  ggplot(aes(x = Alcohol, y = life_exp, color = Status)) + 
+  geom_point()
+```
 ```
 
-Generally countries increased life expectancy, especially in Sub-Saharan Africa. Many of the developed countries experienced little increase in life expectancy.
+```{r}
+p1 + p2
+```
+
+
 
 ```{r}
 deltaLifeExp %>% filter(delta_Life_Exp < 0) %>% 
