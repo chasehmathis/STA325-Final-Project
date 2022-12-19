@@ -133,6 +133,7 @@ percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 
 After filling in null values with the mean, we are able to decrease the percent of na-values from `r 100*round(percent_na,3)`% to `r 100*round(percent_na_after,3)`%. This reduction will help us use more of the data so that we can find better conclusions for policy makers.
 
+\newpage
 ## Exploratory Data Analysis
 
 ```{r}
@@ -304,6 +305,12 @@ lmTable1 <- tidy(control_developed_fit) |>
 lmTable1
 ```
 
+```{r}
+yhat <- predict(control_developed_fit, new_data = testing_life)
+mse_slr <- sum((yhat - testing_life$life_exp)^2/nrow(testing_life))
+```
+
+
 At first glance, we notice a few interesting insights. For one, increasing schooling by one year seems to have the largest real effect on life expectancy. Schooling, which very few public health experts discuss under the lens of life expectancy, seems to have the largest impact. Second, alcohol is naturally inversely related with life expectancy, while alcohol and a country's GDP may be related to one another, as stated earlier during EDA.
 
 A shortcoming to linear regression in this setting is that it requires many assumptions, and some of these the data does not meet. For instance, linear regression assumes that the data is *independent*. However, because the data was sampled every year, each observation is dependent on the the one before it. This is a shortcoming in the model, and provides inspiration to future research in ways we can mitigate the dependency between observations, perhaps by a bootstrapping method.
@@ -351,7 +358,7 @@ rpart.plot(control_developed_fit_tree,roundint = FALSE)
 
 We see again the importance of schooling in increasing life expectancy. Schooling is the first split implying the greatest importance of the variables. In addition, following the tree we see the same trend that we did with increases in years of educated related to increases in life expectancy. In addition, schooling is the most prevalent decision the tree makes. Following the left sub-tree, interactions between `Schooling` and other variables emerge. This is interesting given that the right sub-tree has much less interactions, and instead attempts to predict based off more schooling decisions.
 
-### GAMS
+### GAMs
 
 As promised, we fit a Generalized Additive Model to find nonlinear affects for each of our controllable variables. Schooling has been our most important variable this far, so we begin with analyzing the schooling variable. From the plot shown below, we see that Schooling has a quadratic shape in that increasing years of education from zero to five actually *decreases* life expectancy, but once schooling changes from five onward, life expectancy drastically shoots up. Alcohol has a clear negative relationship that seems generally linear, and percent expenditure also has a slight positive relationship with life expectancy.
 
@@ -366,10 +373,10 @@ undeveloped_Gam <- wflow_controlled_gam |>
   fit(data = training_life)
 
 plot(ggeffects::ggpredict(undeveloped_Gam$fit$fit), facets = TRUE) + 
-  labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for Developing Nations Life Expectancy")
+  labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for Developing Nations' Life Expectancy")
 ```
 
-These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that the average number of years of education is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model. Increasing government expenditure does not simply increase life expectancy, so it is important for governments of these nations to spend money wisely on the factors we listed out, instead of spending freely on anything.
+These models illustrate the importance of schooling in increasing life expectancy, and we conclude that schooling is the most important aspect for developing countries to focus on in increasing life expectancy. We also suggest that given that the average number of years of education is less than 11 years, focusing on Diphtheria vaccination rates will also help increase life expectancy as noted in our tree model. Increasing government expenditure on healthcare does not simply increase life expectancy, so it is important for governments of these nations to spend money wisely on the factors we listed out, instead of spending freely on anything.
 
 ```{r}
 delta_cont <- life |> 
@@ -383,7 +390,7 @@ delta_cont <- life |>
 
 ### Introduction and Pre-Modeling
 
-According to the Centers for Disease Control, the average life expectancy globally is roughly 75 years for women and 70 years for men, as of 2022. Since our data only contains life expectancy measures up to 2015, we will classify the top quartile of 2015 life expectancies as "high life expectancy". Subsequently, 34 countries make up our subset of nations we will consider as having high life expectancy in 2015. Note that the United States is not included in this subset. Interestingly, 19 of these 34 nations are classified as developing nations. This result is most likely due to the fact that a vast majority of the countries are classified as developing, so even when we take a subset of nations with the highest life expectancy, we still expect a lot of these nations to be developing. As with our first research question, we will fit models with the controllable variable as predictors on our 34 nations' data from 2000-2015 to determine just how cost efficient (or inefficient) it would be for a high life expectancy nation to further improve life expectancy. We will also do the same to the remaining nations to compare results.
+According to the Centers for Disease Control (CDC), the average life expectancy globally is roughly 75 years for women and 70 years for men, as of 2022. Since our data only contains life expectancy measures up to 2015, we will classify the top quartile of 2015 life expectancies as "high life expectancy". Subsequently, 34 countries make up our subset of nations we will consider as having high life expectancy in 2015. Interestingly, 19 of these 34 nations are classified as developing nations. This result is most likely due to the fact that a vast majority of the countries are classified as developing, so even when we take a subset of nations with the highest life expectancy, we still expect a lot of these nations to be developing. As with our first research question, we will fit models with the controllable variables as predictors on our 34 nations' data from 2000-2015 to determine just how cost efficient (or inefficient) it would be for a high life expectancy nation to further improve life expectancy. We will also do the same to the remaining nations to compare results.
 
 ```{r, message = FALSE}
 high_life_exp <- life %>% filter(Year == 2015) %>% summarize(Q3 = quantile(life_exp, 0.75)) %>% pull()
@@ -405,7 +412,7 @@ rest_test <- testing(split_rest)
 
 ### Fit Lasso Models to Assess Magnitude of Effect of Each Controllable Variable
 
-Like earlier, we fit lasso regression models to both the high-life expectancy nations data set and the non-high-life expectancy data set. These lasso models will provide interpretable results of not ony which controllable variables are significant, but also how much a change in one of those variables would alter the expected life expectancy of a nation. The $\hat\beta$'s for these variables allow us to assess the expected effect of a government policy affecting one of the controllable variables on life expectancy.
+Like earlier, we fit lasso regression models to both the high-life expectancy nations data set and the non-high-life expectancy data set. These lasso models will provide interpretable results of not only which controllable variables are significant, but also how much a change in one of those variables would alter the expected life expectancy of a nation. The $\hat\beta$'s for these variables allow us to assess the expected effect of a government policy affecting one of the controllable variables on life expectancy.
 
 ```{r}
 life_control_hle <- recipe( ~ ., data = hle_train) %>%
@@ -436,7 +443,7 @@ Fitting to nations with an already high-life expectancy, the significant variabl
 
 Furthermore, it would take an expected increase of government expenditure on healthcare as a percentage of total government expenditure by 11% to increase life expectancy by only 1 year, based on $\hat\beta_{2}$, the coefficient for `tot_expend`. This lasso model's output and results clearly illustrate that a marginal gain in life expectancy is not worth the required investment. The governments of these 34 nations would be better off maintaining their current expenditure on schooling and healthcare and focus their policy in other areas.
 
-One problem to this model's fit is the significant, positive coefficient for the `Alcohol` variable, which contradicts previous results. This implies that an increase in nationwide alcohol consumption would lead to an expected increase in life expectancy, an illogical claim. It may be worth nothing that wealthier, high life expectancy nations could not experience the same magnitude negative effects of alcohol as other nations do.
+One problem to this model's fit is the significant, positive coefficient for the `Alcohol` variable, which contradicts previous results. This implies that an increase in nationwide alcohol consumption would lead to an expected increase in life expectancy, an illogical claim.
 
 ```{r}
 wflow_lasso_rest <- workflow() %>%
@@ -452,7 +459,7 @@ lasso_rest_table <- tidy(lasso_rest_fit) %>%
 lasso_rest_table
 ```
 
-The results of the remaining nations' lasso regression model support our conclusions from the developing nations research conducted earlier. Here, we see a much more significant effect of an increase in schooling for the nations with a life expectancy outside the global top 25%. Interestingly, the model displays a negative coefficient for `tot_expend`, indicating that an increase in spending in healthcare for this subset of nations might decrease life expectancy. Regardless, this further proves that length education is the most important influencer of life expectancy.
+The results of the remaining nations' lasso regression model support our conclusions from the developing nations research conducted earlier. Here, we see a much more significant effect of an increase in schooling for the nations with a life expectancy outside the global top 25%. Interestingly, the model displays a negative coefficient for `tot_expend`, indicating that an increase in spending in healthcare for this subset of nations might decrease life expectancy. Regardless, this further proves that length of education is the most important influencer of life expectancy.
 
 ### Fit Decision Tree to Visualize Possible Decisions
 
@@ -472,7 +479,7 @@ rpart.plot(tree_hle, roundint = FALSE)
 mean_school <- hle_train %>% summarize(mean = mean(Schooling))
 ```
 
-This decision tree's results mostly follows our previous conclusions. The first decision, thus the most important predictor is again `Schooling`. However, it is worth noting that this primary decision is made off years of education being greater or less than 16 years. The mean years of schooling for high life expectancy nations is only `r round(mean_school, 2)` years. The fact that this primary decision is being made at a value of `Schooling` that is well above the mean is concerning, indicating that it is expected to take significant increase in education to increase life expectancy further.
+This decision tree's results mostly follows our previous conclusions. The first decision, thus the most important predictor is again `Schooling`. However, it is worth noting that this primary decision is made off years of education being greater or less than 16 years. The mean years of schooling for high life expectancy nations is only `r round(mean_school, 2)` years. The fact that this primary decision is being made at a value of `Schooling` that is well above the mean is concerning, indicating that it is expected to take a significant increase in education to increase life expectancy further.
 
 ```{r}
 wflow_tree_rest <- workflow() %>%
@@ -484,7 +491,7 @@ tree_rest <- tree_rest$fit$fit$fit
 rpart.plot(tree_rest, roundint = FALSE)
 ```
 
-Again, this decision tree for non-high life expectancy nations indicates that `Schooling` is the most important predictor of life expectancy.
+Again, this decision tree for non-high life expectancy nations indicates that `Schooling` is the most important predictor of life expectancy. The rest of the tree is similar to the tree from the first research question, that after schooling, raising immunization rates is a method of increasing life expectancy in the long run.
 
 ### Generalized Additive Model to Analyze Nonlinear Relationships
 
@@ -496,7 +503,7 @@ plot(ggeffects::ggpredict(gam_hle_fit), facets = TRUE) +
   labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for High Life Expectancy Nations")
 ```
 
-The plot of the generalized additive model fit outlines nonlinear relationships for all four chosen predictors. The results follow that similar of the lasso plot, that increasing years of education increases life expectancy, and increased alcohol consumption decreases life expectancy. Also, vastly increasing expenditure on healthcare (and specifically Diphtheria immunizations) for nations with high life expectancy only marginally increases life expectancy. While these results are telling, we would like to compare these results to the results of a GAM fit on the non-high life expectancy nations.
+The plot of the generalized additive model fit outlines nonlinear relationships for all four chosen predictors. The results for `Schooling` follow that similar of the lasso plot, that increasing years of education increases life expectancy, but we now see that increased alcohol consumption decreases life expectancy. Also, vastly increasing expenditure on healthcare (and specifically Diphtheria immunizations) for nations with high life expectancy only marginally increases life expectancy. While these results are telling, we would like to compare these results to the results of a GAM fit on the non-high life expectancy nations.
 
 ```{r}
 gam_yhat <- predict(gam_hle_fit, newdata = hle_test)
@@ -520,27 +527,27 @@ plot(ggeffects::ggpredict(gam_rest_fit), facets = TRUE) +
   labs(x = "", y = "Life Expectancy (yrs)", title = "GAM Fit for Non-High Life Expectancy Nations")
 ```
 
-With the non-high life expectancy nations, the effect of schooling is much stronger. It is clear that from the fitted GAM that increasing years of education has a drastic effect on life expectancy, indicating by the sharp increase in life expectancy going from 5-12 years of schooling, as well as the low standard error around that portion of the fit. Based on the results of these fitted GAMs, increasing schooling has a lesser effect of increasing life expectancy for countries with high life expectancy. For these nations, it might not be in their best national interest to further invest in education to improve global health. Also, the detrimental effect of alcohol consumption on life expectancy is much stronger for high life expectancy nations. Perhaps, high life expectancy nations are generally better off and more economically independent and thus consume more alcohol. This raises the question of whether these better-off nations' governments should address their people's alcohol consumption from a global health perspective.
+With the non-high life expectancy nations, the effect of schooling is much stronger. It is clear that from the fitted GAM that increasing years of education has a drastic effect on life expectancy for these nations, indicated by the sharp increase in life expectancy going from 5-12 years of schooling, as well as the low standard error around that portion of the fit. Based on the results of these fitted GAMs, increasing schooling has a lesser effect of increasing life expectancy for countries with high life expectancy. For these nations, it might not be in their best national interest to further invest in education to improve global health. Also, the detrimental effect of alcohol consumption on life expectancy is much stronger for high life expectancy nations. Perhaps, high life expectancy nations that are generally better off and more economically independent and consume more alcohol and have a more unhealthy relationship with alcohol. This raises the question of whether these better-off nations' governments should address their people's alcohol consumption from a global health perspective.
 
-Fitting these generalized additive models tells us that it is tough for both groups of nations to alter life expectancy by soley increasing spending on healthcare and immunizations. Also, they further proved that increasing years of education leads to only marginal increases in life expectancy for healthy nations. Finally, the GAMs helped us discover this sharp, detrimental effect of alcohol consumption for high-life expectancy nations, a relationship the other collective nations do not necessarily have.
+Fitting these generalized additive models tells us that it is tough for both groups of nations to alter life expectancy by solely increasing spending on healthcare and immunizations. Also, they further prove that increasing years of education leads to only marginal increases in life expectancy for healthy nations. Finally, the GAMs helped us discover this sharp, detrimental effect of alcohol consumption for high-life expectancy nations, a relationship the other collective nations do not necessarily have.
 
 ## Conclusion
 
-In this study, we investigated the relationship between life expectancy and numerous factors using interpretable statistical models. For countries that are still developing, schooling has the strongest positive relationship with life expectancy, and we suggest to countries that are developing to fund and prioritize education. The regression models and tree model both provide the necessary evidence to support this conclusion.
+In this study, we investigated the relationship between life expectancy and numerous factors using interpretable statistical models. For countries that are still developing, schooling has the strongest positive relationship with life expectancy, and we suggest to countries that are developing to fund and prioritize education. The regression models and tree model both provide the necessary evidence to support this conclusion. Outside of funding education, we suggest governments of developing nations to tactically spend their healthcare expenditure allocation on immunizations, like Diphtheria, as we also found that factor to be a significant predictor of life expectancy. Our results show that it is not neccessary for governments of these nations to increase `pct_expend`, or the proportion of total government spending on healthcare, rather, it is crucial for them to priortize education and make sure an approriate portion of their public healthcare allocation is going towards immunization research and production.
 
-**Maybe add some more about research question 1, really want to hit it home with specific real world interpretations**
+For nations that already have a high life expectancy, schooling also has the strongest positive relationship to life expectancy, but this relationship is a lot weaker than that for nations with non-high life expectancy. For these well off nations, an increase of one year of education is expected to have a lot lesser effect on life expectancy than other nations. As stated earlier, the average number of years of schooling of these nations is roughly 15 years of education, corresponding to a little more than a high school education. In Australia, a nation with high life expectancy, an average year of at an undergraduate university can be up to \$45,000 (AUD), according to Study Australia. From a global health perspective, it would be ridiculously costly for the government of Australia to spend billions of dollars on public, collegiate education with the sole purpose of increasing life expectancy, especially since the expected corresponding increase in life expectancy is marginal.
 
-For nations that already have a high life expectancy, schooling also has the strongest positive relationship to life expectancy, but this relationship is a lot weaker than that for nations with non-high life expectancy. For these well off nations, an increase of one year of education is expected to have a lot lesser effect on life expectancy than other nations. As stated earlier, the average number of years of schooling of these nations is roughly 15 years of education, corresponding to a little more than a high school education. In Australia, a nation with high life expectancy, an average year of at an undergraduate university can be up to \$45,000, according to Study Australia. From a global health perspective, it would be ridiculously costly for the government of Australia to spend billions of dollars on public, collegiate education with the sole purpose of increasing life expectancy, especially since the expected corresponding increase in life expectancy is marginal.
+We found that these nations that are typically well-off also have a detrimental relationship with alcohol. In fact, our modeling suggests that the negative effect of alcohol consumption outweighs any positive effect of other factors on life expectancy. Thus, we also suggest that the governments of these well-off nations shift funding towards government programs related to public alcohol and other drugs education and guidance, safety, and rehabilitation.
 
-We found that these nations that are typically well-off also have a detrimental relationship with alcohol. In fact, our modeling suggests that the negative effect of alcohol consumption outweighs any positive effect of other factors on life expectancy. Thus, we also suggest that the government of these well-off nations shift funding towards government programs related to public alcohol and other drugs education and guidance, safety, and rehabilitation.
+Finally, our research demonstrates that expenditure on healthcare shows a slight positive relationship with life expectancy. It would not be optimal for these high life expectancy nations to heavily shift their expenditure towards healthcare, rather these nations' global health innovation could be driven by slow and steady increase in investments in healthcare, immunizations, and global health. Aside from the numbers and expenditure, it is most important that all nations' governments, developing or not, high life expectancy or not, well off or not, recognize the relevance of global health studies and innovation in order to further progress this world's collective society.
 
-Finally, our research demonstrate that expenditure on healthcare shows a slight positive relationship with life expectancy. It would not be optimal for these high life expectancy nations to heavily shift their expenditure towards healthcare, rather these nations' global health innovation could be driven by slow and steady increase in investments in healthcare, immunizations, and global health. Aside from the numbers and expenditure, it is most important that all nations' governments, developing or not, high life expectancy or not, well off or not, recognize the relevance of global health studies and innovation in order to further progress this world's collective society.
+\newpage
 
 ## Appendix
 
 ### Data Dictionary
 
-### Controllable Variables
+#### Controllable Variables
 
 -   `Alcohol`: Alcohol consumption per capita (liters of pure alcohol)
 -   `pct_expend`: Expenditure on health as a percentage of GDP per capita
@@ -550,7 +557,7 @@ Finally, our research demonstrate that expenditure on healthcare shows a slight 
 -   `Diphtheria`: Diphtheria tetnus toxoid and pertussis immunization rate among 1-year-olds (%)
 -   `Schooling`: Average number of years of schooling
 
-### Uncontrollable Variables (Nuiscance Variables)
+#### Uncontrollable Variables (Nuisance Variables)
 
 -   `BMI`: Average BMI (Body Mass Index) of entire country's population
 -   `GDP`: GDP per capita
@@ -560,10 +567,23 @@ Finally, our research demonstrate that expenditure on healthcare shows a slight 
 -   `income_comp`: Human Development Index in terms of income composition of resources (0 to 1)
 -   `Status`: Developmental status of country (Developed or Developing)
 
-### Indicator Variables
+#### Indicator Variables
 
 -   `under_five_deaths`: Number of deaths of 5-year-olds or younger per 1000 people
 -   `life_exp`: Average expectancy in country (years)
 -   `adult_mortality`: Number of deaths of people aged 15-60 per 1000 people
 -   `infant_mortality`: Number of infants deaths per 1000 infants
 -   `hiv_aids`: Number of deaths of 0-4 year-olds from HIV/AIDS per 1000 live births
+
+### Model Diagnositcs
+
+QQ-Plot of GAM Fit for High-Left Expectancy Nations
+
+```{r}
+qq.gam(gam_hle_fit)
+```
+QQ-Plot of GAM Fit for Non-High Life Expectancy Nations
+
+```{r}
+qq.gam(gam_rest_fit)
+```
