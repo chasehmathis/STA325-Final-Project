@@ -77,14 +77,14 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 ## Relevance
 
 ::: columns
-::: {.column width="55%"}
+::: {.column width="60%"}
 -   Public Policy and Health Policy have almost intertwined in the past few years with the pandemic
 -   Data-driven approaches are not only useful, but necessary
 -   Life expectancy has decreased in recent years
 -   Help health experts understand factors that affect life expectancy
 :::
 
-::: {.column width="45%"}
+::: {.column width="40%"}
 ![](images/fauci.jpeg)
 :::
 :::
@@ -92,11 +92,11 @@ life <- life %>% mutate(Status = factor(Status, levels = c("Developing", "Develo
 ## Research Questions
 
 ::: columns
-::: {.column width="45%"}
+::: {.column width="35%"}
 ![](images/questionmark.png){width="750"}
 :::
 
-::: {.column width="55%"}
+::: {.column width="65%"}
 -   The research is guided by two research questions:
 
     -   \(1\) *Given a country is developing, what can they do to increase their Life Expectancy?*
@@ -134,14 +134,14 @@ percent_na_after <- 1-(nrow(na.omit(life))/nrow(life))
 ```
 
 ::: columns
-::: {.column width="60%"}
+::: {.column width="70%"}
 -   Data collected from the Global Health Observatory (GHO) under World Health Organization (WHO) and United Nations website via Kaggle
 -   22 variables:
 -   Response: `life_exp`
 -   Controllable features: `Alcohol`, `pct_expend`, `hep_b`, `Polio`, `tot_expend`, `Diphtheria`, `Schooling`
 :::
 
-::: {.column width="40%"}
+::: {.column width="30%"}
 ![](images/who.png)
 :::
 :::
@@ -204,13 +204,13 @@ na_table
 ## Results: Schooling is the [Most]{.underline} Important
 
 ::: columns
-::: {.column width="55%"}
+::: {.column width="60%"}
 -   Schooling, which is relatively cheap was found to be the most important predictor in increasing a developing nations life expectancy
 
 -   On average an increase of one year of schooling is related to an increase in over two years in life expectancy given the country is developing
 :::
 
-::: {.column width="45%"}
+::: {.column width="40%"}
 ![](images/schooling.jpeg)
 :::
 :::
@@ -304,7 +304,7 @@ hle_tab_le
 :::
 
 ::: {.column width="40%"}
-Lasso fit for high life expectancy nations ![](images/lasso.png){width="304"} Lasso fit for other nations![](images/lasso_rest.png){width="304"}
+Lasso fit for high life expectancy nations ![](images/lasso.png){width="220"} Lasso fit for other nations![](images/lasso_rest.png){width="220"}
 :::
 :::
 
@@ -332,18 +332,16 @@ Tree Fit for All Other Nations![](images/tree_rest.png)
 :::
 :::
 
-
-
 ## Conclusion
 
 ::: columns
-::: {.column width="50%"}
+::: {.column width="45%"}
 ::: {layout-nrow="2"}
-![](images/alcohol.jpeg) ![](images/schooling2.jpeg)
+![](images/alcohol.jpeg){width="400"} ![](images/schooling2.jpeg){width="400"}
 :::
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 -   We propose that for developing countries, schooling is a low-cost effective method to increase the life expectancy of a nation
 
 -   For countries with high life expectancy, alcohol is the largest contributor to a lower life expectancy. Look to invest in social programs
